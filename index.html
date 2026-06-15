@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FM • Radio</title>
+    <title>Mokopane FM • 100.0 MHz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
         
         :root {
-            --primary: #6366f1;
+            --yellow: #fab419;
+            --maroon: #831622;
+            --maroon-dark: #6b121c;
         }
         
         body {
             font-family: 'Inter', system_ui, sans-serif;
+            background-color: var(--yellow);
+            color: var(--maroon);
         }
         
         .logo-font {
@@ -25,24 +29,24 @@
 
         .station-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: var(--maroon);
+            border-color: var(--maroon-dark);
+            color: var(--yellow);
         }
         
         .station-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            box-shadow: 0 20px 25px -5px rgb(131 22 34 / 0.3), 0 8px 10px -6px rgb(131 22 34 / 0.3);
+            border-color: var(--yellow);
         }
 
         .station-card.active {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-
-        .radio-wave {
-            animation: radio-wave 2s infinite ease-in-out;
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 3px rgba(250, 180, 25, 0.4);
         }
 
         .player-glow {
-            box-shadow: 0 0 25px rgba(99, 102, 241, 0.15);
+            box-shadow: 0 0 25px rgba(131, 22, 34, 0.15);
         }
 
         .station-frequency {
@@ -52,8 +56,8 @@
         }
 
         .modern-shadow {
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
-                        0 4px 6px -4px rgb(0 0 0 / 0.1);
+            box-shadow: 0 10px 15px -3px rgb(131 22 34 / 0.2),
+                        0 4px 6px -4px rgb(131 22 34 / 0.2);
         }
 
         .audio-visualizer {
@@ -65,56 +69,56 @@
 
         .bar {
             width: 5px;
-            background: linear-gradient(to top, #6366f1, #a5b4fc);
+            background: linear-gradient(to top, var(--yellow), #fff);
             border-radius: 9999px;
             transition: height 0.1s ease;
         }
 
-        .nav-active {
-            color: white;
-            background-color: #6366f1;
+        /* Custom Scrollbar matching the theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--yellow);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--maroon);
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="bg-zinc-950 text-white">
+<body class="bg-[#fab419] text-[#831622]">
     <!-- Navbar -->
-    <nav class="border-b border-zinc-800 bg-zinc-950 sticky top-0 z-50">
+    <nav class="border-b border-[#831622]/20 bg-[#fab419] sticky top-0 z-50">
         <div class="max-w-screen-2xl mx-auto">
             <div class="px-8 py-5 flex items-center justify-between">
                 <div class="flex items-center gap-x-3">
                     <!-- Logo -->
-                    <div class="flex items-center gap-x-2">
-                        <div class="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center">
-                            <i class="fa-solid fa-broadcast-tower text-white text-2xl"></i>
-                        </div>
-                        <div>
-                            <span class="logo-font text-3xl font-semibold tracking-tighter">FM</span>
-                            <span class="text-zinc-400 text-xl font-medium">Radio</span>
-                        </div>
+                    <div class="flex items-center gap-x-3">
+                        <img src="https://i.postimg.cc/nL86cHLQ/logo.png" alt="Mokopane FM Logo" class="h-12 object-contain drop-shadow-md">
                     </div>
                 </div>
 
                 <!-- Search -->
                 <div class="flex-1 max-w-md mx-8">
                     <div class="relative">
-                        <i class="fa-solid fa-search absolute left-4 top-3.5 text-zinc-400"></i>
+                        <i class="fa-solid fa-search absolute left-4 top-3.5 text-[#fab419]"></i>
                         <input 
                             id="search-input"
                             type="text" 
                             placeholder="Search stations or genres..." 
-                            class="w-full bg-zinc-900 border border-zinc-800 focus:border-zinc-700 transition-colors text-white pl-11 py-3 rounded-3xl outline-none text-sm"
+                            class="w-full bg-[#831622] border border-[#6b121c] focus:border-[#fab419] transition-colors text-[#fab419] placeholder-[#fab419]/60 pl-11 py-3 rounded-3xl outline-none text-sm shadow-inner"
                         >
                     </div>
                 </div>
 
                 <div class="flex items-center gap-x-4">
-                    <!-- User -->
+                    <!-- Contact / Info -->
                     <div class="flex items-center gap-x-3">
                         <div class="text-right">
-                            <div class="text-sm font-medium">Alex Rivera</div>
-                            <div class="text-xs text-zinc-500">Premium</div>
+                            <div class="text-sm font-bold">015 491 1208</div>
+                            <div class="text-xs font-semibold opacity-80">Studio Line</div>
                         </div>
-                        <img src="https://i.pravatar.cc/36?img=47" class="w-9 h-9 rounded-2xl border border-zinc-800" alt="User avatar">
                     </div>
                 </div>
             </div>
@@ -126,19 +130,19 @@
         <!-- Header -->
         <div class="flex items-end justify-between mb-8">
             <div>
-                <h1 class="text-5xl font-semibold tracking-tighter">Live Radio</h1>
-                <p class="text-zinc-400 mt-1">Discover and listen to stations from around the world</p>
+                <h1 class="text-5xl font-bold tracking-tighter drop-shadow-sm">Live Radio</h1>
+                <p class="font-medium mt-1 opacity-90">Listen live to Mokopane FM and more</p>
             </div>
             
             <div class="flex items-center gap-x-3">
                 <button onclick="playRandomStation()" 
-                        class="flex items-center gap-x-2 px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-3xl text-sm font-medium transition-colors">
+                        class="flex items-center gap-x-2 px-5 py-2.5 bg-[#831622] hover:bg-[#6b121c] border border-[#6b121c] rounded-3xl text-[#fab419] text-sm font-bold transition-colors shadow-md">
                     <i class="fa-solid fa-random mr-2"></i>
                     <span>Random Station</span>
                 </button>
                 
                 <button onclick="stopRadio()" 
-                        class="flex items-center gap-x-2 px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded-3xl text-sm font-medium transition-colors">
+                        class="flex items-center gap-x-2 px-5 py-2.5 bg-[#831622] hover:bg-[#6b121c] border border-[#6b121c] rounded-3xl text-[#fab419] text-sm font-bold transition-colors shadow-md">
                     <i class="fa-solid fa-stop mr-2"></i>
                     <span>Stop</span>
                 </button>
@@ -146,29 +150,29 @@
         </div>
 
         <!-- Now Playing / Main Player -->
-        <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 mb-8 modern-shadow">
+        <div class="bg-[#831622] border border-[#6b121c] rounded-3xl p-8 mb-8 modern-shadow text-[#fab419]">
             <div class="flex flex-col lg:flex-row gap-8">
                 
                 <!-- Player Info -->
                 <div class="flex-1">
                     <div class="flex items-center gap-x-3 mb-4">
-                        <div class="px-3 py-1 bg-zinc-800 rounded-2xl text-xs font-medium flex items-center gap-x-2">
-                            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                            <span class="text-emerald-400">LIVE</span>
+                        <div class="px-3 py-1 bg-[#fab419]/20 border border-[#fab419]/30 rounded-2xl text-xs font-bold flex items-center gap-x-2">
+                            <div class="w-2 h-2 bg-[#fab419] rounded-full animate-pulse"></div>
+                            <span class="text-[#fab419]">ON AIR</span>
                         </div>
-                        <span id="player-genre" class="text-sm text-zinc-400">—</span>
+                        <span id="player-genre" class="text-sm font-medium opacity-80">—</span>
                     </div>
                     
                     <div id="player-station-name" 
-                         class="text-4xl font-semibold tracking-tighter mb-1">
+                         class="text-4xl font-bold tracking-tighter mb-1 text-white">
                         Select a station
                     </div>
                     <div id="player-frequency" 
-                         class="text-2xl font-semibold text-zinc-400 station-frequency">
+                         class="text-2xl font-bold opacity-90 station-frequency">
                         —
                     </div>
                     
-                    <div id="player-location" class="text-sm text-zinc-500 mt-2 flex items-center gap-x-2">
+                    <div id="player-location" class="text-sm font-medium opacity-70 mt-2 flex items-center gap-x-2">
                         <i class="fa-solid fa-globe"></i>
                         <span>—</span>
                     </div>
@@ -187,7 +191,7 @@
                 <div class="flex flex-col justify-between min-w-[180px]">
                     <div class="flex items-center justify-end gap-x-3">
                         <button onclick="togglePlay()" 
-                                class="w-14 h-14 flex items-center justify-center bg-white text-zinc-900 rounded-2xl hover:bg-zinc-100 transition-all shadow-inner"
+                                class="w-14 h-14 flex items-center justify-center bg-[#fab419] text-[#831622] rounded-2xl hover:bg-white transition-all shadow-lg border border-[#fab419]"
                                 id="play-button">
                             <i class="fa-solid fa-play text-2xl ml-0.5" id="play-icon"></i>
                         </button>
@@ -195,17 +199,17 @@
                     
                     <!-- Volume -->
                     <div class="mt-6">
-                        <div class="flex items-center justify-between text-xs mb-1.5 px-1">
-                            <span class="text-zinc-400">Volume</span>
-                            <span id="volume-value" class="text-zinc-300 font-medium">80</span>
+                        <div class="flex items-center justify-between text-xs font-bold mb-1.5 px-1">
+                            <span class="opacity-80">Volume</span>
+                            <span id="volume-value" class="text-white">80</span>
                         </div>
                         <div class="flex items-center gap-x-3">
-                            <i class="fa-solid fa-volume-low text-zinc-500"></i>
+                            <i class="fa-solid fa-volume-low opacity-80"></i>
                             <input type="range" 
                                    id="volume-slider"
                                    min="0" max="100" value="80"
-                                   class="w-full accent-indigo-500 cursor-pointer">
-                            <i class="fa-solid fa-volume-high text-zinc-500"></i>
+                                   class="w-full accent-[#fab419] cursor-pointer">
+                            <i class="fa-solid fa-volume-high opacity-80"></i>
                         </div>
                     </div>
                 </div>
@@ -215,8 +219,8 @@
         <!-- Filters -->
         <div class="mb-6">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-semibold">Stations</h2>
-                <div class="text-sm text-zinc-400" id="station-count">24 stations</div>
+                <h2 class="text-xl font-bold">Stations</h2>
+                <div class="text-sm font-bold opacity-80" id="station-count">24 stations</div>
             </div>
             
             <!-- Genre Filters -->
@@ -226,7 +230,7 @@
         </div>
 
         <!-- Stations Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4" id="stations-grid">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 pb-12" id="stations-grid">
             <!-- Stations populated by JavaScript -->
         </div>
         
@@ -235,23 +239,17 @@
     <!-- Audio Element -->
     <audio id="audio-player" class="hidden"></audio>
 
-    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Tailwind script
-        function initializeTailwind() {
-            document.documentElement.style.setProperty('--accent', '#6366f1');
-        }
-
         // Radio Stations Data
         const stations = [
             {
                 id: 1,
-                name: "Groove Salad",
-                frequency: "101.5",
-                genre: "Ambient",
-                location: "San Francisco",
-                stream: "https://ice1.somafm.com/groovesalad-320-mp3",
-                color: "#6366f1"
+                name: "Mokopane FM",
+                frequency: "100.0",
+                genre: "Community",
+                location: "Mokopane, SA",
+                stream: "https://ice1.somafm.com/groovesalad-320-mp3", // Demo stream kept for functionality
+                color: "#fab419"
             },
             {
                 id: 2,
@@ -260,7 +258,7 @@
                 genre: "Lounge",
                 location: "San Francisco",
                 stream: "https://ice1.somafm.com/secretagent-320-mp3",
-                color: "#8b5cf6"
+                color: "#fab419"
             },
             {
                 id: 3,
@@ -269,7 +267,7 @@
                 genre: "Indie",
                 location: "San Francisco",
                 stream: "https://ice1.somafm.com/indiepop-320-mp3",
-                color: "#ec4899"
+                color: "#fab419"
             },
             {
                 id: 4,
@@ -278,7 +276,7 @@
                 genre: "Ambient",
                 location: "San Francisco",
                 stream: "https://ice1.somafm.com/lush-320-mp3",
-                color: "#14b8a6"
+                color: "#fab419"
             },
             {
                 id: 5,
@@ -287,7 +285,7 @@
                 genre: "Electronic",
                 location: "Las Vegas",
                 stream: "https://ice1.somafm.com/defcon-320-mp3",
-                color: "#f43f5e"
+                color: "#fab419"
             },
             {
                 id: 6,
@@ -296,7 +294,7 @@
                 genre: "Ambient",
                 location: "International Space Station",
                 stream: "https://ice1.somafm.com/spacestation-320-mp3",
-                color: "#3b82f6"
+                color: "#fab419"
             },
             {
                 id: 7,
@@ -305,7 +303,7 @@
                 genre: "Country",
                 location: "San Francisco",
                 stream: "https://ice1.somafm.com/bootliquor-320-mp3",
-                color: "#f59e0b"
+                color: "#fab419"
             },
             {
                 id: 8,
@@ -314,7 +312,7 @@
                 genre: "Ambient",
                 location: "San Francisco",
                 stream: "https://ice1.somafm.com/deepspaceone-320-mp3",
-                color: "#6366f1"
+                color: "#fab419"
             },
             {
                 id: 9,
@@ -323,7 +321,7 @@
                 genre: "Electronic",
                 location: "London",
                 stream: "https://stream-relay-geo.ntslive.net/stream",
-                color: "#a855f7"
+                color: "#fab419"
             },
             {
                 id: 10,
@@ -332,7 +330,7 @@
                 genre: "Lo-fi",
                 location: "Amsterdam",
                 stream: "https://stream-44.zeno.fm/0r0xa792kwzuv",
-                color: "#22c55e"
+                color: "#fab419"
             },
             {
                 id: 11,
@@ -341,7 +339,7 @@
                 genre: "Alternative",
                 location: "Seattle",
                 stream: "https://kexp-mp3-128.streamguys1.com/kexp128.mp3",
-                color: "#eab308"
+                color: "#fab419"
             },
             {
                 id: 12,
@@ -350,7 +348,7 @@
                 genre: "Jazz",
                 location: "Seattle",
                 stream: "https://live.amperwave.net/direct/ppm-jazz24mp3-ibc1",
-                color: "#64748b"
+                color: "#fab419"
             }
         ];
 
@@ -410,25 +408,24 @@
                 
                 const cardHTML = `
                     <div onclick="playStation(${station.id})" 
-                         class="station-card bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-3xl p-5 cursor-pointer ${isActive ? 'active border-indigo-500' : ''}">
+                         class="station-card rounded-3xl p-5 cursor-pointer shadow-md ${isActive ? 'active border-[#fab419]' : 'border-[#6b121c]'}">
                         
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex items-center gap-x-3">
-                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center" 
-                                     style="background-color: ${station.color}20; color: ${station.color}">
+                                <div class="w-10 h-10 rounded-2xl flex items-center justify-center bg-[#fab419] text-[#831622] shadow-sm">
                                     <i class="fa-solid fa-broadcast-tower text-xl"></i>
                                 </div>
                                 <div>
-                                    <div class="font-semibold text-lg leading-none">${station.name}</div>
-                                    <div class="text-sm text-zinc-400 station-frequency mt-1">${station.frequency} FM</div>
+                                    <div class="font-bold text-lg leading-none">${station.name}</div>
+                                    <div class="text-sm font-semibold opacity-80 station-frequency mt-1">${station.frequency} FM</div>
                                 </div>
                             </div>
                             
                             ${isActive ? `
                                 <div class="flex items-center">
-                                    <div class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-xs font-medium rounded-2xl flex items-center gap-x-1">
-                                        <div class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
-                                        <span class="text-[10px]">LIVE</span>
+                                    <div class="px-2.5 py-1 bg-[#fab419]/20 text-[#fab419] text-xs font-bold rounded-2xl flex items-center gap-x-1 border border-[#fab419]/30">
+                                        <div class="w-1.5 h-1.5 bg-[#fab419] rounded-full animate-pulse"></div>
+                                        <span class="text-[10px]">ON AIR</span>
                                     </div>
                                 </div>
                             ` : ''}
@@ -436,11 +433,11 @@
                         
                         <div class="flex items-center justify-between">
                             <div>
-                                <span class="inline-block px-3 py-1 text-xs font-medium rounded-2xl bg-zinc-800 text-zinc-300">
+                                <span class="inline-block px-3 py-1 text-xs font-bold rounded-2xl bg-[#6b121c] text-[#fab419]">
                                     ${station.genre}
                                 </span>
                             </div>
-                            <div class="text-xs text-zinc-500">
+                            <div class="text-xs font-medium opacity-70">
                                 ${station.location}
                             </div>
                         </div>
@@ -458,14 +455,14 @@
             
             container.innerHTML = `
                 <button onclick="filterByGenre('all')" 
-                        class="px-4 py-1.5 text-sm rounded-3xl bg-indigo-600 hover:bg-indigo-500 transition-colors font-medium">
+                        class="px-4 py-1.5 text-sm rounded-3xl bg-[#831622] text-[#fab419] hover:bg-[#6b121c] border border-[#831622] transition-colors font-bold shadow-sm">
                     All
                 </button>
             `;
             
             genres.forEach(genre => {
                 const button = document.createElement('button');
-                button.className = `px-4 py-1.5 text-sm rounded-3xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 transition-colors font-medium`;
+                button.className = `px-4 py-1.5 text-sm rounded-3xl bg-transparent text-[#831622] hover:bg-[#831622] hover:text-[#fab419] border border-[#831622] transition-colors font-bold`;
                 button.textContent = genre;
                 button.onclick = () => filterByGenre(genre);
                 container.appendChild(button);
@@ -481,7 +478,6 @@
                 filtered = stations.filter(station => station.genre === genre);
             }
             
-            // Apply search filter if there's text
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
             if (searchTerm) {
                 filtered = filtered.filter(station => 
@@ -520,7 +516,6 @@
             const station = stations.find(s => s.id === stationId);
             if (!station) return;
 
-            // Stop current audio if playing
             if (audio && !audio.paused) {
                 audio.pause();
             }
@@ -536,11 +531,9 @@
                 <span>${station.location}</span>
             `;
 
-            // Set audio source
             audio.src = station.stream;
             audio.volume = document.getElementById('volume-slider').value / 100;
 
-            // Try to play
             const playPromise = audio.play();
             
             if (playPromise !== undefined) {
@@ -564,14 +557,13 @@
             const cards = document.querySelectorAll('.station-card');
             
             cards.forEach(card => {
-                card.classList.remove('active', 'border-indigo-500');
-                card.classList.add('border-zinc-800');
+                card.classList.remove('active', 'border-[#fab419]');
+                card.classList.add('border-[#6b121c]');
                 
-                // Check if this card is the current station
-                const stationName = card.querySelector('.font-semibold').textContent;
+                const stationName = card.querySelector('.font-bold').textContent;
                 if (currentStation && stationName === currentStation.name) {
-                    card.classList.add('active', 'border-indigo-500');
-                    card.classList.remove('border-zinc-800');
+                    card.classList.add('active', 'border-[#fab419]');
+                    card.classList.remove('border-[#6b121c]');
                 }
             });
         }
@@ -579,7 +571,6 @@
         // Toggle play/pause
         function togglePlay() {
             if (!currentStation) {
-                // Play first station if none selected
                 playStation(stations[0].id);
                 return;
             }
@@ -621,16 +612,14 @@
             updatePlayButton();
             stopVisualizer();
             
-            // Reset player UI
             document.getElementById('player-station-name').textContent = "Select a station";
             document.getElementById('player-frequency').textContent = "—";
             document.getElementById('player-genre').textContent = "—";
             document.getElementById('player-location').innerHTML = `<i class="fa-solid fa-globe"></i> <span>—</span>`;
             
-            // Remove active states
             document.querySelectorAll('.station-card').forEach(card => {
-                card.classList.remove('active', 'border-indigo-500');
-                card.classList.add('border-zinc-800');
+                card.classList.remove('active', 'border-[#fab419]');
+                card.classList.add('border-[#6b121c]');
             });
             
             currentStation = null;
@@ -647,10 +636,9 @@
             const visualizerContainer = document.getElementById('visualizer');
             visualizerContainer.innerHTML = '';
             
-            // Create 12 bars
             for (let i = 0; i < 12; i++) {
                 const bar = document.createElement('div');
-                bar.className = `bar w-[5px] bg-indigo-400 rounded-full`;
+                bar.className = `bar w-[5px] bg-[#fab419] rounded-full`;
                 bar.style.height = `${Math.random() * 20 + 8}px`;
                 visualizerContainer.appendChild(bar);
             }
@@ -694,7 +682,6 @@
                     const height = Math.max(8, (value / 255) * 55);
                     bar.style.height = `${height}px`;
                     
-                    // Add some variation
                     if (Math.random() > 0.8) {
                         bar.style.opacity = 0.7 + Math.random() * 0.3;
                     }
@@ -721,17 +708,6 @@
             }
         }
 
-        // Filter stations
-        function filterStations(term) {
-            const filtered = stations.filter(station => 
-                station.name.toLowerCase().includes(term) ||
-                station.genre.toLowerCase().includes(term) ||
-                station.location.toLowerCase().includes(term)
-            );
-            renderStations(filtered);
-        }
-
-        // Keyboard shortcuts
         function setupKeyboardShortcuts() {
             document.addEventListener('keydown', (e) => {
                 if (e.key === ' ' || e.key === 'Spacebar') {
@@ -749,19 +725,12 @@
             });
         }
 
-        // Update station count
         function updateStationCount() {
             document.getElementById('station-count').textContent = `${stations.length} stations`;
         }
 
-        // Initialize everything
         function initializeRadio() {
-            initializeTailwind();
-            
-            // Initialize audio
             initAudio();
-            
-            // Render UI
             renderStations();
             renderGenreFilters();
             setupSearch();
@@ -769,11 +738,8 @@
             setupKeyboardShortcuts();
             updateStationCount();
             
-            // Set initial volume
             document.getElementById('volume-value').textContent = '80';
             
-            // Auto-select first station (but don't autoplay due to browser policies)
-            // We can highlight it instead
             setTimeout(() => {
                 const firstCard = document.querySelector('.station-card');
                 if (firstCard) {
@@ -781,11 +747,9 @@
                 }
             }, 500);
 
-            // Bonus: Show a welcome toast
-            console.log('%c[FM Radio] Website initialized successfully', 'color: #64748b');
+            console.log('%c[Mokopane FM] Website initialized successfully', 'color: #fab419');
         }
 
-        // Start the application
         window.onload = initializeRadio;
     </script>
 </body>
