@@ -205,7 +205,7 @@
     /* Right: text */
     .hero-text {
       flex: 0 0 auto;
-      max-width: 520px;
+      max-width: 620px;
       text-align: right;
       opacity: 0;
       transform: translateX(80px);
@@ -214,7 +214,7 @@
 
     .hero-eyebrow {
       display: inline-block;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.25em;
       text-transform: uppercase;
@@ -228,7 +228,7 @@
 
     .hero-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(64px, 8vw, 112px);
+      font-size: clamp(72px, 9vw, 128px);
       line-height: 0.92;
       letter-spacing: 0.02em;
       color: var(--white);
@@ -241,7 +241,7 @@
     }
 
     .hero-sub {
-      font-size: 15px;
+      font-size: 18px;
       font-weight: 400;
       color: rgba(255,255,255,0.65);
       line-height: 1.6;
@@ -1001,13 +1001,28 @@
     /* ═══════════════════════════════════════
        RESPONSIVE
     ═══════════════════════════════════════ */
+
+    /* ── Tablets / small laptops ── */
     @media (max-width: 1024px) {
+      nav { padding: 16px 32px; }
+
+      .hero-content { padding: 0 32px; padding-top: 90px; gap: 32px; }
+      .hero-logo-wrap { flex: 0 0 50%; max-width: 50%; }
+      .hero-text { max-width: 46%; }
+      .hero-title { font-size: clamp(56px, 7.5vw, 96px); }
+
+      .section { padding: 80px 32px; }
+      .about-grid { gap: 48px; }
       .shows-grid { grid-template-columns: repeat(2, 1fr); }
+      .shows-inner { padding: 0 32px; }
       .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
-      .contact-inner { grid-template-columns: 1fr 1fr; }
+      .contact-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .contact-strip { padding: 72px 32px; }
+      footer { padding: 64px 32px 0; }
     }
 
-    @media (max-width: 768px) {
+    /* ── Tablets / portrait & large phones ── */
+    @media (max-width: 850px) {
       nav { padding: 16px 24px; }
       .nav-links { display: none; }
       .hamburger { display: flex; }
@@ -1015,24 +1030,99 @@
       .hero-content {
         flex-direction: column-reverse;
         text-align: center;
-        padding: 120px 24px 60px;
-        gap: 32px;
+        padding: 110px 24px 56px;
+        gap: 28px;
       }
+      .hero-logo-wrap { flex: 0 0 auto; max-width: 100%; }
+      .hero-logo-wrap img { width: 60%; max-width: 260px; margin: 0 auto; display: block; }
       .hero-text { max-width: 100%; text-align: center; }
-      .hero-logo-wrap img { width: 200px; }
+      .hero-title { font-size: clamp(52px, 13vw, 84px); }
+      .hero-sub { font-size: 16px; margin-bottom: 28px; }
 
       .section { padding: 64px 24px; }
-      .about-grid { grid-template-columns: 1fr; gap: 48px; }
-      .shows-grid { grid-template-columns: 1fr; }
-      .shows-section { padding: 64px 0; }
+      .section-title { font-size: clamp(36px, 8vw, 56px); }
+      .about-grid { grid-template-columns: 1fr; gap: 44px; }
+      .about-stats { gap: 18px; }
+      .shows-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .shows-section { padding: 56px 0; }
       .shows-inner { padding: 0 24px; }
-      .stream-cta { padding: 72px 24px; }
-      .contact-strip { padding: 64px 24px; }
-      .contact-inner { grid-template-columns: 1fr; }
-      .footer-grid { grid-template-columns: 1fr; gap: 36px; }
-      footer { padding: 48px 24px 0; }
-      .footer-bottom { flex-direction: column; text-align: center; }
+      .stream-cta { padding: 64px 24px; }
+      .contact-strip { padding: 56px 24px; }
+      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+      footer { padding: 56px 24px 0; }
       .sticky-player { min-width: 280px; bottom: 16px; }
+    }
+
+    /* ── Phones ── */
+    @media (max-width: 600px) {
+      nav { padding: 14px 20px; }
+      .nav-logo img { height: 56px; }
+
+      .hero-content { padding: 100px 20px 48px; gap: 24px; }
+      .hero-logo-wrap img { width: 70%; max-width: 220px; }
+      .hero-eyebrow { font-size: 11px; padding: 5px 12px; }
+      .hero-title { font-size: clamp(44px, 14vw, 68px); margin-bottom: 8px; }
+      .hero-sub { font-size: 15px; margin-bottom: 24px; }
+      .hero-live-badge { font-size: 11px; }
+
+      .section { padding: 56px 20px; }
+      .section-label { font-size: 11px; }
+      .section-title { font-size: clamp(32px, 9vw, 48px); margin-bottom: 18px; }
+      .about-text p { font-size: 15px; line-height: 1.7; }
+      .about-stats { grid-template-columns: 1fr 1fr; gap: 14px; }
+      .stat-card { padding: 22px 18px; }
+      .stat-num { font-size: 40px; }
+
+      .shows-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 40px; }
+      .shows-section { padding: 48px 0; }
+      .shows-inner { padding: 0 20px; }
+
+      .stream-cta { padding: 56px 20px; }
+      .stream-cta p { font-size: 15px; margin: 16px auto 32px; }
+      .cta-btn-group { flex-direction: column; align-items: stretch; gap: 12px; }
+      .btn-primary, .btn-outline { justify-content: center; padding: 14px 28px; }
+
+      .contact-strip { padding: 48px 20px; }
+      .contact-inner { gap: 36px; }
+      .contact-detail a, .contact-detail span { font-size: 14px; }
+
+      footer { padding: 48px 20px 0; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; gap: 12px; }
+      .footer-legal { flex-wrap: wrap; justify-content: center; gap: 16px; }
+      .freq-badge { font-size: 40px; }
+
+      .ticker-item { font-size: 12px; padding: 0 28px; }
+
+      .sticky-player { width: 92%; min-width: unset; padding: 10px 18px; gap: 12px; bottom: 14px; }
+      .player-name { font-size: 12px; }
+      .player-freq { font-size: 10px; }
+      .player-btn { width: 38px; height: 38px; }
+    }
+
+    /* ── Small phones ── */
+    @media (max-width: 380px) {
+      nav { padding: 12px 16px; }
+      .nav-logo img { height: 48px; }
+
+      .hero-content { padding: 92px 16px 40px; }
+      .hero-logo-wrap img { width: 80%; max-width: 180px; }
+      .hero-title { font-size: clamp(38px, 15vw, 52px); }
+      .hero-sub { font-size: 14px; }
+
+      .section { padding: 44px 16px; }
+      .shows-inner { padding: 0 16px; }
+      .stream-cta { padding: 44px 16px; }
+      .contact-strip { padding: 40px 16px; }
+      footer { padding: 40px 16px 0; }
+
+      .about-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-card { padding: 18px 14px; }
+      .stat-num { font-size: 34px; }
+
+      .sticky-player { width: 94%; padding: 8px 14px; gap: 10px; }
+      .player-station { display: none; }
     }
   </style>
 </head>
@@ -1041,7 +1131,7 @@
   <!-- ── NAVBAR ── -->
   <nav id="navbar">
     <a href="#" class="nav-logo">
-      <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM Logo" />
+      <img src="https://i.postimg.cc/DwvbtmND/logo.png" alt="Mokopane FM Logo" />
     </a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
@@ -1065,7 +1155,7 @@
     <div class="hero-content">
       <!-- Left: logo -->
       <div class="hero-logo-wrap">
-        <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" />
+        <img src="https://i.postimg.cc/DwvbtmND/logo.png" alt="Mokopane FM" />
       </div>
 
       <!-- Right: text -->
@@ -1083,20 +1173,6 @@
           <strong>Best local content</strong> in Mogalakwena & Waterberg.<br />
           The voice your community trusts, every day.
         </p>
-        <div style="margin-bottom:12px;">
-          <span class="hero-live-badge" style="margin-bottom:0">
-            <span class="live-dot"></span>
-            Broadcasting 24/7
-          </span>
-        </div>
-        <a href="https://iono.fm/s/154" target="_blank" rel="noopener" class="hero-play-btn">
-          <span class="play-icon">
-            <svg width="14" height="16" viewBox="0 0 14 16" fill="white">
-              <path d="M2 1.5L12 8L2 14.5V1.5Z"/>
-            </svg>
-          </span>
-          Listen Live Now
-        </a>
       </div>
     </div>
   </section>
@@ -1316,7 +1392,7 @@
   <footer>
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" />
+        <img src="https://i.postimg.cc/DwvbtmND/logo.png" alt="Mokopane FM" />
         <div class="freq-badge">100.0</div>
         <p class="footer-tagline">
           The community voice of Mogalakwena and the Waterberg region. Broadcasting local stories, culture, and music 24 hours a day, 7 days a week.
