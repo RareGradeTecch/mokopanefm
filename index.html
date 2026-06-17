@@ -1122,14 +1122,14 @@
       position: fixed;
       inset: 0;
       z-index: 2000;
-      background: rgba(10,10,10,0.98);
-      backdrop-filter: blur(25px);
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(15px);
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .player-modal.active {
@@ -1152,6 +1152,7 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.3s;
+      z-index: 2002;
     }
 
     .modal-close:hover {
@@ -1165,8 +1166,13 @@
       max-width: 500px;
       text-align: center;
       padding: 40px;
+      background: var(--dark2);
+      border: 1px solid rgba(245, 168, 0, 0.2);
+      border-radius: 40px;
       transform: translateY(40px) scale(0.95);
-      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      z-index: 2001;
     }
 
     .player-modal.active .modal-content {
@@ -1174,8 +1180,8 @@
     }
 
     .modal-logo {
-      width: 160px;
-      margin: 0 auto 32px;
+      width: 140px;
+      margin: 0 auto 24px;
       filter: drop-shadow(0 0 30px rgba(245, 168, 0, 0.4));
     }
 
@@ -1197,30 +1203,30 @@
 
     .modal-show-name {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 56px;
-      line-height: 1;
+      font-size: 48px;
+      line-height: 1.1;
       color: var(--white);
       margin-bottom: 8px;
     }
 
     .modal-show-info {
-      font-size: 16px;
+      font-size: 15px;
       color: var(--gold);
       font-weight: 600;
       letter-spacing: 0.05em;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
     }
 
     .modal-controls {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 32px;
+      gap: 24px;
     }
 
     .modal-play-btn {
-      width: 100px;
-      height: 100px;
+      width: 88px;
+      height: 88px;
       background: var(--gold);
       border-radius: 50%;
       border: none;
@@ -1235,12 +1241,11 @@
     .modal-play-btn:hover {
       transform: scale(1.08);
       background: var(--gold-lt);
-      box-shadow: 0 0 60px rgba(245, 168, 0, 0.6);
     }
 
     .modal-volume {
       width: 100%;
-      max-width: 300px;
+      max-width: 260px;
       display: flex;
       align-items: center;
       gap: 16px;
@@ -1253,30 +1258,34 @@
       cursor: pointer;
     }
 
+    .drag-handle {
+      display: none;
+      width: 40px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      margin: 0 auto 20px;
+    }
+
     /* Mobile Bottom Sheet Styles */
     @media (max-width: 850px) {
       .player-modal {
         align-items: flex-end;
-        background: rgba(10,10,10,0.6);
       }
       .modal-content {
-        background: var(--dark2);
         border-radius: 32px 32px 0 0;
-        padding: 48px 24px 64px;
+        padding: 16px 24px 64px;
         transform: translateY(100%);
         max-width: 100%;
-        border-top: 1px solid rgba(245, 168, 0, 0.2);
+        border-bottom: none;
+        touch-action: none; /* Required for dragging */
       }
+      .drag-handle { display: block; }
       .player-modal.active .modal-content {
         transform: translateY(0);
       }
-      .modal-close {
-        top: -72px;
-        right: 50%;
-        transform: translateX(50%);
-        background: var(--dark2);
-      }
-      .modal-show-name { font-size: 42px; }
+      .modal-close { display: none; }
+      .modal-show-name { font-size: 38px; }
     }
 
     /* ═══════════════════════════════════════
@@ -1881,7 +1890,7 @@
           <div class="carousel-slide">
             <img src="https://i.postimg.cc/pLV9LZjC/police.jpg" alt="Mokopane FM Team" />
           </div>
-         <div class="carousel-slide">
+          <div class="carousel-slide">
             <img src="https://i.postimg.cc/3wVW9Qcf/sassa.jpg" alt="Mokopane FM Team" />
           </div>
           <div class="carousel-slide">
@@ -2106,7 +2115,8 @@
     <button class="modal-close" onclick="closePlayerModal()">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
-    <div class="modal-content">
+    <div class="modal-content" id="modalContent">
+      <div class="drag-handle"></div>
       <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" class="modal-logo" />
       <div class="modal-live-badge">
         <span class="live-dot"></span>
@@ -2145,6 +2155,7 @@
     const eqBars = document.getElementById('eqBars');
     const stickyPlayer = document.getElementById('stickyPlayer');
     const playerModal = document.getElementById('playerModal');
+    const modalContent = document.getElementById('modalContent');
     const modalShowName = document.getElementById('modalShowName');
     const modalShowInfo = document.getElementById('modalShowInfo');
 
@@ -2160,12 +2171,15 @@
     // ── Audio player logic ──
     function togglePlayer() {
       if (!isPlaying) {
+        // Direct playback from the stream URL
+        if (!audio.src || audio.src === "") {
+            audio.src = 'https://stream.iono.fm/s154';
+        }
         audio.play().then(() => {
           updateUI(true);
         }).catch(err => {
           console.error("Playback failed:", err);
-          // Some browsers require a fresh interaction
-          audio.src = 'https://stream.iono.fm/s154';
+          audio.load();
           audio.play();
           updateUI(true);
         });
@@ -2205,12 +2219,53 @@
     function closePlayerModal() {
       playerModal.classList.remove('active');
       document.body.style.overflow = '';
-      // Reset modal text to default station info after closing
+      modalContent.style.transform = ''; // Reset drag transform
       setTimeout(() => {
         modalShowName.innerText = "Mokopane FM";
         modalShowInfo.innerText = "100.0 MHz · The Voice of Mogalakwena";
-      }, 500);
+      }, 400);
     }
+
+    // Close on click outside
+    playerModal.addEventListener('click', (e) => {
+      if (e.target === playerModal) {
+        closePlayerModal();
+      }
+    });
+
+    // ── Mobile Drag to Close ──
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+
+    modalContent.addEventListener('touchstart', (e) => {
+      if (window.innerWidth <= 850) {
+        startY = e.touches[0].clientY;
+        isDragging = true;
+        modalContent.style.transition = 'none';
+      }
+    }, { passive: true });
+
+    modalContent.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      currentY = e.touches[0].clientY;
+      const deltaY = currentY - startY;
+      if (deltaY > 0) {
+        modalContent.style.transform = `translateY(${deltaY}px)`;
+      }
+    }, { passive: true });
+
+    modalContent.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      modalContent.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
+      const deltaY = currentY - startY;
+      if (deltaY > 150) {
+        closePlayerModal();
+      } else {
+        modalContent.style.transform = 'translateY(0)';
+      }
+    });
 
     function openShowModal(name, time, host) {
       modalShowName.innerText = name;
