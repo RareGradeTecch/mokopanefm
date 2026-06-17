@@ -1250,6 +1250,9 @@
 
     .drag-handle { display: none; width: 40px; height: 5px; background: rgba(255, 255, 255, 0.2); border-radius: 10px; margin: 0 auto 20px; }
 
+    /* ═══════════════════════════════════════
+       MOBILE RESPONSIVE ADJUSTMENTS
+    ═══════════════════════════════════════ */
     @media (max-width: 850px) {
       nav { padding: 16px 24px; }
       .nav-links { display: none; }
@@ -1289,6 +1292,34 @@
       .sticky-player { width: 56px; height: 56px; }
       .sticky-player:hover { width: 56px; border-radius: 50%; padding: 0; }
       .sticky-player:hover .player-info-pill, .sticky-player:hover .eq-bars { display: none; }
+
+      /* Additional Mobile Layout Optimizations Added */
+      .section, .shows-inner, .carousel-wrap, .stream-cta, .contact-strip, footer {
+        padding-left: 24px;
+        padding-right: 24px;
+      }
+      .section { padding-top: 64px; padding-bottom: 64px; }
+      .shows-section, .carousel-section { padding-top: 64px; padding-bottom: 64px; }
+      .stream-cta { padding-top: 64px; padding-bottom: 64px; }
+      .contact-strip { padding-top: 64px; padding-bottom: 64px; }
+      footer { padding-top: 64px; }
+
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .about-stats { gap: 16px; }
+      .stat-card { padding: 20px 16px; }
+      .stat-num { font-size: 40px; }
+
+      .contact-inner { grid-template-columns: 1fr; gap: 32px; }
+
+      .footer-grid { grid-template-columns: 1fr; gap: 40px; padding-bottom: 40px; }
+      .footer-bottom { flex-direction: column; justify-content: center; gap: 20px; text-align: center; }
+
+      .carousel { aspect-ratio: 4 / 3; margin-top: 32px; }
+      .carousel-arrow { width: 36px; height: 36px; }
+      .carousel-arrow svg { width: 18px; height: 18px; }
+
+      .shows-track .show-card { width: 280px; } 
+      .section-title { font-size: clamp(36px, 8vw, 72px); }
     }
 
     @keyframes slideInLeft { to { opacity: 1; transform: translateX(0); } }
@@ -1307,7 +1338,6 @@
 </head>
 <body data-theme="dark">
 
-  <!-- ── NAVBAR ── -->
   <nav id="navbar">
     <a href="#" class="nav-logo">
       <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM Logo" />
@@ -1324,7 +1354,6 @@
           <svg id="themeIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </div>
       </div>
-      <!-- Navbar Listen Live Button Fixed -->
       <button onclick="openPlayerModal()" class="nav-listen">
         <span class="dot"></span>
         Listen Live
@@ -1335,7 +1364,6 @@
     </div>
   </nav>
 
-  <!-- ── HERO ── -->
   <section class="hero" id="home">
     <div class="hero-bg"></div>
     <div class="hero-content">
@@ -1358,7 +1386,6 @@
     </div>
   </section>
 
-  <!-- ── TICKER ── -->
   <div class="ticker-bar">
     <div class="ticker-track">
       <div class="ticker-item"><span>★</span> Mokopane FM 100.0 MHz</div>
@@ -1374,7 +1401,6 @@
     </div>
   </div>
 
-  <!-- ── ABOUT ── -->
   <section id="about">
     <div class="section">
       <p class="section-label reveal">Our Story</p>
@@ -1395,7 +1421,6 @@
     </div>
   </section>
 
-  <!-- ── SHOWS ── -->
   <section class="shows-section" id="shows">
     <div class="shows-inner">
       <p class="section-label reveal">Programming</p>
@@ -1469,14 +1494,12 @@
             </button>
           </div>
         </div>
-        <!-- Duplicates for loop -->
         <div class="show-card" aria-hidden="true"><span class="show-time">Mon – Fri · 05:00 – 09:00</span><div class="show-name">Morning Pulse</div><p class="show-desc">Start your day with the latest local news, traffic, weather, and the best Afro sounds to get Mokopane moving.</p><div class="show-footer"><div class="show-host"><div class="host-avatar">MP</div><span class="host-name">The Morning Crew</span></div><button class="tune-in-btn" onclick="openShowModal('Morning Pulse', 'Mon – Fri · 05:00 – 09:00', 'The Morning Crew')"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In</button></div></div>
         <div class="show-card" aria-hidden="true"><span class="show-time">Mon – Fri · 09:00 – 12:00</span><div class="show-name">Motse FM Midday</div><p class="show-desc">Community conversations, local stories, and chart-topping hits from Limpopo and beyond through the midday rush.</p><div class="show-footer"><div class="show-host"><div class="host-avatar">MD</div><span class="host-name">Midday Drive</span></div><button class="tune-in-btn" onclick="openShowModal('Motse FM Midday', 'Mon – Fri · 09:00 – 12:00', 'Midday Drive')"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In</button></div></div>
       </div>
     </div>
   </section>
 
-  <!-- ── PHOTO CAROUSEL ── -->
   <section class="carousel-section">
     <div class="carousel-wrap">
       <p class="section-label reveal">Gallery</p>
@@ -1497,7 +1520,6 @@
     </div>
   </section>
 
-  <!-- ── LIVE STREAM CTA ── -->
   <section class="stream-cta" id="live">
     <p class="section-label">Tune In</p>
     <h2 class="section-title reveal">Stream Us <em>Anywhere</em></h2>
@@ -1508,7 +1530,6 @@
     </div>
   </section>
 
-  <!-- ── CONTACT ── -->
   <section class="contact-strip" id="contact">
     <div class="contact-inner">
       <div class="contact-block reveal">
@@ -1529,7 +1550,6 @@
     </div>
   </section>
 
-  <!-- ── FOOTER ── -->
   <footer>
     <div class="footer-grid">
       <div class="footer-brand"><img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" /><div class="freq-badge">100.0</div><p class="footer-tagline">The community voice of Mogalakwena and the Waterberg region. Broadcasting local stories, culture, and music 24/7.</p></div>
@@ -1539,7 +1559,6 @@
     <div class="footer-bottom"><p class="footer-copy">&copy; 2026 Mokopane FM Community Radio Station. All rights reserved.</p></div>
   </footer>
 
-  <!-- ── FLOATING PLAYER (FAB) ── -->
   <div class="floating-player-wrap" id="floatingPlayerWrap">
     <div class="sticky-player" id="stickyPlayer" onclick="openPlayerModal()">
       <button class="player-btn" id="playerBtn" onclick="event.stopPropagation(); togglePlayer()" aria-label="Play / Pause">
@@ -1556,7 +1575,6 @@
     </div>
   </div>
 
-  <!-- ── PLAYER MODAL / BOTTOM SHEET ── -->
   <div class="player-modal" id="playerModal">
     <button class="modal-close" onclick="closePlayerModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     <div class="modal-content" id="modalContent">
