@@ -622,10 +622,10 @@
       margin-top: 56px;
       margin-left: auto;
       margin-right: auto;
-      width: 80%;
+      width: 100%;
       border-radius: 22px;
       overflow: hidden;
-      aspect-ratio: 16 / 7;
+      aspect-ratio: 16 / 6;
       background: var(--dark2);
       box-shadow: 0 24px 70px rgba(0,0,0,0.55);
     }
@@ -1207,6 +1207,22 @@
 
     .drag-handle { display: none; width: 40px; height: 5px; background: rgba(255, 255, 255, 0.2); border-radius: 10px; margin: 0 auto 20px; }
 
+    /* ── OUR STORY IMAGE ── */
+    .about-image-wrap {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      align-self: stretch;
+    }
+
+    .about-image {
+      width: 100%;
+      max-width: 100%;
+      display: block;
+      object-fit: contain;
+      object-position: bottom center;
+    }
+
     /* ═══════════════════════════════════════
        MOBILE RESPONSIVE ADJUSTMENTS
     ═══════════════════════════════════════ */
@@ -1226,8 +1242,8 @@
       .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
       .hero-bg {
-        background-size: contain;
-        background-position: top center;
+        background-size: cover;
+        background-position: center center;
       }
       .hero-content { flex-direction: column-reverse; text-align: center; padding: 110px 24px 56px; gap: 28px; }
       .hero-logo-wrap img { width: 60%; max-width: 260px; margin: 0 auto; }
@@ -1286,13 +1302,15 @@
       .about-stats { gap: 16px; }
       .stat-card { padding: 20px 16px; }
       .stat-num { font-size: 40px; }
+      .about-image-wrap { min-height: 280px; }
+      .about-image { max-height: 380px; object-fit: contain; }
 
       .contact-inner { grid-template-columns: 1fr; gap: 32px; }
 
       .footer-grid { grid-template-columns: 1fr; gap: 40px; padding-bottom: 40px; }
       .footer-bottom { flex-direction: column; justify-content: center; gap: 20px; text-align: center; }
 
-      .carousel { aspect-ratio: 4 / 3; margin-top: 32px; }
+      .carousel { aspect-ratio: 4 / 3; margin-top: 32px; width: 100%; }
       .carousel-arrow { width: 36px; height: 36px; }
       .carousel-arrow svg { width: 18px; height: 18px; }
 
@@ -1384,11 +1402,8 @@
           <p>From the latest news and traffic updates to the best in local music and cultural programming, we are your 24/7 companion. Our mission is to provide a platform for growth, education, and entertainment that resonates with the heartbeat of Mokopane.</p>
           <p>Join us on <strong>100.0 FM</strong> or stream us live right here on our website to stay connected to your community, no matter where you are.</p>
         </div>
-        <div class="about-stats reveal reveal-delay-2">
-          <div class="stat-card"><div class="stat-num">100.0</div><div class="stat-label">MHz Frequency</div></div>
-          <div class="stat-card"><div class="stat-num">24/7</div><div class="stat-label">Broadcasting</div></div>
-          <div class="stat-card"><div class="stat-num">100k+</div><div class="stat-label">Local Listeners</div></div>
-          <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">Community Focused</div></div>
+        <div class="about-image-wrap reveal reveal-delay-2">
+          <img src="https://i.postimg.cc/Gm9mdQ7v/wome.png" alt="Mokopane FM" class="about-image" />
         </div>
       </div>
     </div>
