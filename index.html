@@ -1290,7 +1290,18 @@
     .modal-show-name { font-family: 'Bebas Neue', sans-serif; font-size: 48px; line-height: 1.1; color: var(--white); margin-bottom: 8px; }
     .modal-show-info { font-size: 15px; color: var(--gold); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 32px; }
 
-    .modal-controls { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+    .modal-controls { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; }
+
+    .iono-player-wrap {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .iono-player-wrap iframe {
+      display: block;
+      border-radius: 12px;
+    }
 
     .modal-play-btn {
       width: 88px;
@@ -1671,15 +1682,14 @@
 
   <div class="floating-player-wrap" id="floatingPlayerWrap">
     <div class="sticky-player" id="stickyPlayer" onclick="handleStickyPlayerClick(event)">
-      <button class="player-btn" id="playerBtn" onclick="event.stopPropagation(); togglePlayer()" aria-label="Play / Pause">
-        <svg id="playIcon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <svg id="pauseIcon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      <button class="player-btn" id="playerBtn" onclick="event.stopPropagation(); openPlayerModal()" aria-label="Listen Live">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
       </button>
       <div class="player-info-pill">
         <span class="player-name">Mokopane FM</span>
         <span class="player-freq" id="stickyStatusText">100.0 MHz · LIVE</span>
       </div>
-      <div class="eq-bars paused" id="eqBars">
+      <div class="eq-bars" id="eqBars">
         <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
       </div>
     </div>
@@ -1694,27 +1704,14 @@
       <h2 class="modal-show-name" id="modalShowName">Mokopane FM</h2>
       <p class="modal-show-info" id="modalShowInfo">100.0 MHz · The Voice of Mogalakwena</p>
       <div class="modal-controls">
-        <button class="modal-play-btn" onclick="togglePlayer()">
-          <svg id="modalPlayIcon" width="48" height="48" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z"/></svg>
-          <svg id="modalPauseIcon" width="48" height="48" viewBox="0 0 24 24" fill="black" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        </button>
-        <div class="modal-volume">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
-          <input type="range" min="0" max="1" step="0.01" value="1" oninput="changeVolume(this.value)" />
+        <div class="iono-player-wrap">
+          <iframe src="https://iframe.iono.fm/s/154?layout=modern" width="100%" height="170" frameborder="0" referrerpolicy="origin" loading="lazy"></iframe>
         </div>
       </div>
     </div>
   </div>
 
-  <audio id="radioStream" preload="none"><source src="https://stream.iono.fm/s154" type="audio/mpeg" /></audio>
-
   <script>
-    let isPlaying = false;
-    const audio = document.getElementById('radioStream');
-    const playIcon = document.getElementById('playIcon');
-    const pauseIcon = document.getElementById('pauseIcon');
-    const modalPlayIcon = document.getElementById('modalPlayIcon');
-    const modalPauseIcon = document.getElementById('modalPauseIcon');
     const eqBars = document.getElementById('eqBars');
     const floatingPlayerWrap = document.getElementById('floatingPlayerWrap');
     const playerModal = document.getElementById('playerModal');
@@ -1741,59 +1738,13 @@
     window.addEventListener('scroll', () => {
       const scrollY = window.scrollY;
       const heroHeight = document.getElementById('home').offsetHeight;
-      
-      // Navbar scroll effect
       document.getElementById('navbar').classList.toggle('scrolled', scrollY > 60);
-      
-      // Floating player visibility (appear after hero)
       if (scrollY > heroHeight - 100) {
         floatingPlayerWrap.classList.add('visible');
       } else {
         floatingPlayerWrap.classList.remove('visible');
       }
     });
-
-    // ── Audio player logic ──
-    function togglePlayer() {
-      if (!isPlaying) {
-        if (!audio.src || audio.src === "") audio.src = 'https://stream.iono.fm/s154';
-        audio.play().then(() => updateUI(true)).catch(() => { audio.load(); audio.play(); updateUI(true); });
-      } else {
-        audio.pause();
-        updateUI(false);
-      }
-    }
-
-    function updateUI(playing) {
-      isPlaying = playing;
-      playIcon.style.display = playing ? 'none' : 'block';
-      pauseIcon.style.display = playing ? 'block' : 'none';
-      modalPlayIcon.style.display = playing ? 'none' : 'block';
-      modalPauseIcon.style.display = playing ? 'block' : 'none';
-      playing ? eqBars.classList.remove('paused') : eqBars.classList.add('paused');
-
-      const waveHTML = `<div style="display:inline-flex; align-items:flex-end; gap:2px; height:12px; margin-right:6px;">
-        <div style="width:2px; height:12px; background:currentColor; transform-origin:bottom; animation:eqAnim 0.8s infinite ease-in-out 0s;"></div>
-        <div style="width:2px; height:12px; background:currentColor; transform-origin:bottom; animation:eqAnim 0.8s infinite ease-in-out 0.2s;"></div>
-        <div style="width:2px; height:12px; background:currentColor; transform-origin:bottom; animation:eqAnim 0.8s infinite ease-in-out 0.4s;"></div>
-      </div>`;
-
-      const navListenBtn = document.getElementById('navListenBtn');
-      const stickyStatus = document.getElementById('stickyStatusText');
-      const modalBadge = document.getElementById('modalLiveBadge');
-
-      if (playing) {
-        navListenBtn.innerHTML = waveHTML + 'Listening...';
-        stickyStatus.innerHTML = waveHTML + 'Listening...';
-        modalBadge.innerHTML = waveHTML + 'Listening...';
-      } else {
-        navListenBtn.innerHTML = '<span class="dot"></span>Listen Live';
-        stickyStatus.innerHTML = '100.0 MHz · LIVE';
-        modalBadge.innerHTML = '<span class="live-dot"></span>On Air Now';
-      }
-    }
-
-    function changeVolume(val) { audio.volume = val; }
 
     // ── Modal logic ──
     function openPlayerModal() {
@@ -1835,7 +1786,6 @@
       modalShowName.innerText = name;
       modalShowInfo.innerText = time + " · with " + host;
       openPlayerModal();
-      if (!isPlaying) togglePlayer();
     }
 
     // ── Sticky Player Click Routine ──
