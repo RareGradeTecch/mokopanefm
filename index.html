@@ -596,6 +596,37 @@
       box-shadow: 0 0 0 3px var(--gold-dk), 0 6px 24px rgba(245,168,0,0.65);
     }
 
+    /* ── GRADIENT PLACEHOLDER (cards without photos) ── */
+    .featured-img-area--gradient {
+      background: linear-gradient(145deg, var(--grad-a, #111) 0%, var(--grad-b, #333) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .featured-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .featured-initials {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.15);
+    }
+
+    .featured-show-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+
     .show-time {
       display: inline-block;
       font-size: 11px;
@@ -1589,25 +1620,37 @@
     </div>
     <div class="shows-scroll">
       <div class="shows-track" id="showsTrack">
-        <div class="show-card">
-          <span class="show-time">Mon – Fri · 05:00 – 09:00</span>
-          <div class="show-name">Morning Pulse</div>
-          <p class="show-desc">Start your day with the latest local news, traffic, weather, and the best Afro sounds to get Mokopane moving.</p>
-          <div class="show-footer">
-            <div class="show-host"><div class="host-avatar">MP</div><span class="host-name">The Morning Crew</span></div>
-            <button class="tune-in-btn" onclick="openShowModal('Morning Pulse', 'Mon – Fri · 05:00 – 09:00', 'The Morning Crew')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In
+        <div class="show-card show-card--featured">
+          <div class="featured-img-area featured-img-area--gradient" style="--grad-a:#7A1515;--grad-b:#F5A800;">
+            <div class="featured-placeholder">
+              <div class="featured-initials">MP</div>
+              <div class="featured-show-label">Morning Pulse</div>
+            </div>
+          </div>
+          <div class="featured-card-bottom">
+            <div class="featured-bottom-left">
+              <div class="featured-show-name">Morning Pulse</div>
+              <span class="featured-show-time">Mon – Fri · 05:00 – 09:00</span>
+            </div>
+            <button class="featured-play-btn" onclick="openShowModal('Morning Pulse', 'Mon – Fri · 05:00 – 09:00', 'The Morning Crew')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
           </div>
         </div>
-        <div class="show-card">
-          <span class="show-time">Mon – Fri · 09:00 – 12:00</span>
-          <div class="show-name">Motse FM Midday</div>
-          <p class="show-desc">Community conversations, local stories, and chart-topping hits from Limpopo and beyond through the midday rush.</p>
-          <div class="show-footer">
-            <div class="show-host"><div class="host-avatar">MD</div><span class="host-name">Midday Drive</span></div>
-            <button class="tune-in-btn" onclick="openShowModal('Motse FM Midday', 'Mon – Fri · 09:00 – 12:00', 'Midday Drive')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In
+        <div class="show-card show-card--featured">
+          <div class="featured-img-area featured-img-area--gradient" style="--grad-a:#1a1a2e;--grad-b:#7A1515;">
+            <div class="featured-placeholder">
+              <div class="featured-initials">MM</div>
+              <div class="featured-show-label">Motse FM Midday</div>
+            </div>
+          </div>
+          <div class="featured-card-bottom">
+            <div class="featured-bottom-left">
+              <div class="featured-show-name">Motse FM Midday</div>
+              <span class="featured-show-time">Mon – Fri · 09:00 – 12:00</span>
+            </div>
+            <button class="featured-play-btn" onclick="openShowModal('Motse FM Midday', 'Mon – Fri · 09:00 – 12:00', 'Midday Drive')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
           </div>
         </div>
@@ -1625,41 +1668,91 @@
             </button>
           </div>
         </div>
-        <div class="show-card">
-          <span class="show-time">Mon – Fri · 16:00 – 19:00</span>
-          <div class="show-name">Drive Time</div>
-          <p class="show-desc">Your commute soundtrack. Live call-ins, traffic updates, and the biggest hits to get you home.</p>
-          <div class="show-footer">
-            <div class="show-host"><div class="host-avatar">DT</div><span class="host-name">Drive Team</span></div>
-            <button class="tune-in-btn" onclick="openShowModal('Drive Time', 'Mon – Fri · 16:00 – 19:00', 'Drive Team')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In
+        <div class="show-card show-card--featured">
+          <div class="featured-img-area featured-img-area--gradient" style="--grad-a:#0d2137;--grad-b:#D48900;">
+            <div class="featured-placeholder">
+              <div class="featured-initials">DT</div>
+              <div class="featured-show-label">Drive Time</div>
+            </div>
+          </div>
+          <div class="featured-card-bottom">
+            <div class="featured-bottom-left">
+              <div class="featured-show-name">Drive Time</div>
+              <span class="featured-show-time">Mon – Fri · 16:00 – 19:00</span>
+            </div>
+            <button class="featured-play-btn" onclick="openShowModal('Drive Time', 'Mon – Fri · 16:00 – 19:00', 'Drive Team')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
           </div>
         </div>
-        <div class="show-card">
-          <span class="show-time">Weekends · 10:00 – 14:00</span>
-          <div class="show-name">Gospel Hour</div>
-          <p class="show-desc">Uplifting gospel, praise and worship, and community spiritual programming every weekend morning.</p>
-          <div class="show-footer">
-            <div class="show-host"><div class="host-avatar">GH</div><span class="host-name">Gospel Hosts</span></div>
-            <button class="tune-in-btn" onclick="openShowModal('Gospel Hour', 'Weekends · 10:00 – 14:00', 'Gospel Hosts')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In
+        <div class="show-card show-card--featured">
+          <div class="featured-img-area featured-img-area--gradient" style="--grad-a:#1a2e1a;--grad-b:#4E0D0D;">
+            <div class="featured-placeholder">
+              <div class="featured-initials">GH</div>
+              <div class="featured-show-label">Gospel Hour</div>
+            </div>
+          </div>
+          <div class="featured-card-bottom">
+            <div class="featured-bottom-left">
+              <div class="featured-show-name">Gospel Hour</div>
+              <span class="featured-show-time">Weekends · 10:00 – 14:00</span>
+            </div>
+            <button class="featured-play-btn" onclick="openShowModal('Gospel Hour', 'Weekends · 10:00 – 14:00', 'Gospel Hosts')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
           </div>
         </div>
-        <div class="show-card">
-          <span class="show-time">Fri – Sat · 20:00 – 00:00</span>
-          <div class="show-name">Night Frequency</div>
-          <p class="show-desc">Deep cuts, electronic, and Amapiano sessions for Mokopane's nightlife. Tune in and turn up.</p>
-          <div class="show-footer">
-            <div class="show-host"><div class="host-avatar">NF</div><span class="host-name">Night Crew</span></div>
-            <button class="tune-in-btn" onclick="openShowModal('Night Frequency', 'Fri – Sat · 20:00 – 00:00', 'Night Crew')">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In
+        <div class="show-card show-card--featured">
+          <div class="featured-img-area featured-img-area--gradient" style="--grad-a:#0a0a1a;--grad-b:#7A1515;">
+            <div class="featured-placeholder">
+              <div class="featured-initials">NF</div>
+              <div class="featured-show-label">Night Frequency</div>
+            </div>
+          </div>
+          <div class="featured-card-bottom">
+            <div class="featured-bottom-left">
+              <div class="featured-show-name">Night Frequency</div>
+              <span class="featured-show-time">Fri – Sat · 20:00 – 00:00</span>
+            </div>
+            <button class="featured-play-btn" onclick="openShowModal('Night Frequency', 'Fri – Sat · 20:00 – 00:00', 'Night Crew')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </button>
           </div>
         </div>
-        <div class="show-card" aria-hidden="true"><span class="show-time">Mon – Fri · 05:00 – 09:00</span><div class="show-name">Morning Pulse</div><p class="show-desc">Start your day with the latest local news, traffic, weather, and the best Afro sounds to get Mokopane moving.</p><div class="show-footer"><div class="show-host"><div class="host-avatar">MP</div><span class="host-name">The Morning Crew</span></div><button class="tune-in-btn" onclick="openShowModal('Morning Pulse', 'Mon – Fri · 05:00 – 09:00', 'The Morning Crew')"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In</button></div></div>
-        <div class="show-card" aria-hidden="true"><span class="show-time">Mon – Fri · 09:00 – 12:00</span><div class="show-name">Motse FM Midday</div><p class="show-desc">Community conversations, local stories, and chart-topping hits from Limpopo and beyond through the midday rush.</p><div class="show-footer"><div class="show-host"><div class="host-avatar">MD</div><span class="host-name">Midday Drive</span></div><button class="tune-in-btn" onclick="openShowModal('Motse FM Midday', 'Mon – Fri · 09:00 – 12:00', 'Midday Drive')"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Tune In</button></div></div>
+        <div class="show-card show-card--featured" aria-hidden="true">
+          <div class="featured-img-area featured-img-area--gradient" style="--grad-a:#7A1515;--grad-b:#F5A800;">
+            <div class="featured-placeholder">
+              <div class="featured-initials">MP</div>
+              <div class="featured-show-label">Morning Pulse</div>
+            </div>
+          </div>
+          <div class="featured-card-bottom">
+            <div class="featured-bottom-left">
+              <div class="featured-show-name">Morning Pulse</div>
+              <span class="featured-show-time">Mon – Fri · 05:00 – 09:00</span>
+            </div>
+            <button class="featured-play-btn" onclick="openShowModal('Morning Pulse', 'Mon – Fri · 05:00 – 09:00', 'The Morning Crew')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="show-card show-card--featured" aria-hidden="true">
+          <div class="featured-img-area featured-img-area--gradient" style="--grad-a:#1a1a2e;--grad-b:#7A1515;">
+            <div class="featured-placeholder">
+              <div class="featured-initials">MM</div>
+              <div class="featured-show-label">Motse FM Midday</div>
+            </div>
+          </div>
+          <div class="featured-card-bottom">
+            <div class="featured-bottom-left">
+              <div class="featured-show-name">Motse FM Midday</div>
+              <span class="featured-show-time">Mon – Fri · 09:00 – 12:00</span>
+            </div>
+            <button class="featured-play-btn" onclick="openShowModal('Motse FM Midday', 'Mon – Fri · 09:00 – 12:00', 'Midday Drive')">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
