@@ -1303,6 +1303,49 @@
       border-radius: 12px;
     }
 
+    .listening-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 28px;
+      border-radius: 50px;
+      background: rgba(245,168,0,0.1);
+      border: 1px solid rgba(245,168,0,0.3);
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .listening-toggle:hover {
+      background: rgba(245,168,0,0.18);
+      border-color: var(--gold);
+    }
+
+    .listening-toggle.active {
+      background: rgba(245,168,0,0.15);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .listening-toggle-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .listening-toggle.active .listening-toggle-dot {
+      background: #4ADE80;
+      animation: pulse 1.4s infinite;
+    }
+
     .modal-play-btn {
       width: 88px;
       height: 88px;
@@ -1499,9 +1542,9 @@
       <div class="hero-text">
         <h1 class="hero-title">MOKOPANE<br /><span class="freq">FM 100.0</span></h1>
         <p class="hero-sub"><strong>Best local content</strong> in Mogalakwena & Waterberg.<br />The voice your community trusts, every day.</p>
-        <button onclick="openPlayerModal()" class="hero-play-btn">
-          <div class="play-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
-          Listen Live
+        <button onclick="openPlayerModal()" class="hero-play-btn" id="heroPlayBtn">
+          <div class="play-icon" id="heroPlayIcon"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+          <span id="heroPlayText">Listen Live</span>
         </button>
       </div>
     </div>
@@ -1689,7 +1732,7 @@
         <span class="player-name">Mokopane FM</span>
         <span class="player-freq" id="stickyStatusText">100.0 MHz · LIVE</span>
       </div>
-      <div class="eq-bars" id="eqBars">
+      <div class="eq-bars paused" id="eqBars">
         <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
       </div>
     </div>
@@ -1707,6 +1750,10 @@
         <div class="iono-player-wrap">
           <iframe src="https://iframe.iono.fm/s/154?layout=modern" width="100%" height="170" frameborder="0" referrerpolicy="origin" loading="lazy"></iframe>
         </div>
+        <button class="listening-toggle" id="listeningToggle" onclick="toggleListening()">
+          <span class="listening-toggle-dot"></span>
+          <span id="listeningToggleText">I'm Listening</span>
+        </button>
       </div>
     </div>
   </div>
@@ -1718,6 +1765,55 @@
     const modalContent = document.getElementById('modalContent');
     const modalShowName = document.getElementById('modalShowName');
     const modalShowInfo = document.getElementById('modalShowInfo');
+
+    let isListening = false;
+
+    const waveHTML = `<span style="display:inline-flex;align-items:flex-end;gap:2px;height:13px;margin-right:6px;vertical-align:middle;">
+      <span style="width:2px;border-radius:1px;background:currentColor;transform-origin:bottom;animation:eqAnim 0.7s infinite ease-in-out 0s;display:block;height:13px;"></span>
+      <span style="width:2px;border-radius:1px;background:currentColor;transform-origin:bottom;animation:eqAnim 0.7s infinite ease-in-out 0.15s;display:block;height:13px;"></span>
+      <span style="width:2px;border-radius:1px;background:currentColor;transform-origin:bottom;animation:eqAnim 0.7s infinite ease-in-out 0.3s;display:block;height:13px;"></span>
+      <span style="width:2px;border-radius:1px;background:currentColor;transform-origin:bottom;animation:eqAnim 0.7s infinite ease-in-out 0.45s;display:block;height:13px;"></span>
+    </span>`;
+
+    function setListeningUI(listening) {
+      isListening = listening;
+      const navBtn = document.getElementById('navListenBtn');
+      const heroText = document.getElementById('heroPlayText');
+      const heroIcon = document.getElementById('heroPlayIcon');
+      const stickyStatus = document.getElementById('stickyStatusText');
+      const toggleBtn = document.getElementById('listeningToggle');
+      const toggleText = document.getElementById('listeningToggleText');
+
+      if (listening) {
+        // Navbar
+        navBtn.innerHTML = waveHTML + 'Listening...';
+        // Hero button
+        heroText.innerHTML = 'Listening...';
+        heroIcon.innerHTML = waveHTML.replace('margin-right:6px', 'margin-right:0');
+        // Sticky pill
+        stickyStatus.innerHTML = waveHTML + 'Listening...';
+        eqBars.classList.remove('paused');
+        // Modal toggle
+        toggleBtn.classList.add('active');
+        toggleText.textContent = 'Stop Listening';
+      } else {
+        // Navbar
+        navBtn.innerHTML = '<span class="dot"></span>Listen Live';
+        // Hero button
+        heroText.textContent = 'Listen Live';
+        heroIcon.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>';
+        // Sticky pill
+        stickyStatus.innerHTML = '100.0 MHz · LIVE';
+        eqBars.classList.add('paused');
+        // Modal toggle
+        toggleBtn.classList.remove('active');
+        toggleText.textContent = "I'm Listening";
+      }
+    }
+
+    function toggleListening() {
+      setListeningUI(!isListening);
+    }
 
     // ── Theme Logic ──
     function toggleTheme() {
@@ -1760,6 +1856,8 @@
         modalShowName.innerText = "Mokopane FM";
         modalShowInfo.innerText = "100.0 MHz · The Voice of Mogalakwena";
       }, 400);
+      // Reset listening state when modal closes
+      if (isListening) setListeningUI(false);
     }
 
     playerModal.addEventListener('click', (e) => { if (e.target === playerModal) closePlayerModal(); });
