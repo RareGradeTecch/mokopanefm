@@ -261,20 +261,6 @@
       animation: slideInRight 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
     }
 
-    .hero-eyebrow {
-      display: inline-block;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 14px;
-      background: rgba(245, 168, 0, 0.1);
-      border: 1px solid rgba(245, 168, 0, 0.25);
-      padding: 5px 14px;
-      border-radius: 20px;
-    }
-
     .hero-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(72px, 9vw, 128px);
@@ -336,18 +322,6 @@
     }
 
     .play-icon svg { margin-left: 2px; }
-
-    .hero-live-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 16px;
-    }
 
     .live-dot {
       width: 8px;
@@ -673,7 +647,7 @@
     .carousel-slide img {
       width: 100%;
       height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       display: block;
     }
 
@@ -1251,9 +1225,13 @@
       .hamburger.active span:nth-child(2) { opacity: 0; }
       .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+      .hero-bg {
+        background-size: contain;
+        background-position: top center;
+      }
       .hero-content { flex-direction: column-reverse; text-align: center; padding: 110px 24px 56px; gap: 28px; }
       .hero-logo-wrap img { width: 60%; max-width: 260px; margin: 0 auto; }
-      .hero-text { max-width: 100%; text-align: center; background: rgba(10, 10, 10, 0.4); backdrop-filter: blur(10px); padding: 24px; border-radius: 24px; border: 1px solid rgba(255, 255, 255, 0.1); }
+      .hero-text { max-width: 100%; text-align: center; }
       .hero-title { font-size: clamp(52px, 13vw, 84px); }
       .tune-in-btn { font-size: 10px; padding: 8px 12px; }
 
@@ -1354,7 +1332,7 @@
           <svg id="themeIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </div>
       </div>
-      <button onclick="openPlayerModal()" class="nav-listen">
+      <button onclick="openPlayerModal()" class="nav-listen" id="navListenBtn">
         <span class="dot"></span>
         Listen Live
       </button>
@@ -1371,11 +1349,6 @@
         <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" />
       </div>
       <div class="hero-text">
-        <div class="hero-live-badge">
-          <span class="live-dot"></span>
-          On Air Now
-        </div>
-        <span class="hero-eyebrow">Mokopane Community Radio Station</span>
         <h1 class="hero-title">MOKOPANE<br /><span class="freq">FM 100.0</span></h1>
         <p class="hero-sub"><strong>Best local content</strong> in Mogalakwena & Waterberg.<br />The voice your community trusts, every day.</p>
         <button onclick="openPlayerModal()" class="hero-play-btn">
@@ -1567,7 +1540,7 @@
       </button>
       <div class="player-info-pill">
         <span class="player-name">Mokopane FM</span>
-        <span class="player-freq">100.0 MHz · LIVE</span>
+        <span class="player-freq" id="stickyStatusText">100.0 MHz · LIVE</span>
       </div>
       <div class="eq-bars paused" id="eqBars">
         <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
@@ -1580,7 +1553,7 @@
     <div class="modal-content" id="modalContent">
       <div class="drag-handle"></div>
       <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" class="modal-logo" />
-      <div class="modal-live-badge"><span class="live-dot"></span>On Air Now</div>
+      <div class="modal-live-badge" id="modalLiveBadge"><span class="live-dot"></span>On Air Now</div>
       <h2 class="modal-show-name" id="modalShowName">Mokopane FM</h2>
       <p class="modal-show-info" id="modalShowInfo">100.0 MHz · The Voice of Mogalakwena</p>
       <div class="modal-controls">
@@ -1661,6 +1634,26 @@
       modalPlayIcon.style.display = playing ? 'none' : 'block';
       modalPauseIcon.style.display = playing ? 'block' : 'none';
       playing ? eqBars.classList.remove('paused') : eqBars.classList.add('paused');
+
+      const waveHTML = `<div style="display:inline-flex; align-items:flex-end; gap:2px; height:12px; margin-right:6px;">
+        <div style="width:2px; height:12px; background:currentColor; transform-origin:bottom; animation:eqAnim 0.8s infinite ease-in-out 0s;"></div>
+        <div style="width:2px; height:12px; background:currentColor; transform-origin:bottom; animation:eqAnim 0.8s infinite ease-in-out 0.2s;"></div>
+        <div style="width:2px; height:12px; background:currentColor; transform-origin:bottom; animation:eqAnim 0.8s infinite ease-in-out 0.4s;"></div>
+      </div>`;
+
+      const navListenBtn = document.getElementById('navListenBtn');
+      const stickyStatus = document.getElementById('stickyStatusText');
+      const modalBadge = document.getElementById('modalLiveBadge');
+
+      if (playing) {
+        navListenBtn.innerHTML = waveHTML + 'Listening...';
+        stickyStatus.innerHTML = waveHTML + 'Listening...';
+        modalBadge.innerHTML = waveHTML + 'Listening...';
+      } else {
+        navListenBtn.innerHTML = '<span class="dot"></span>Listen Live';
+        stickyStatus.innerHTML = '100.0 MHz · LIVE';
+        modalBadge.innerHTML = '<span class="live-dot"></span>On Air Now';
+      }
     }
 
     function changeVolume(val) { audio.volume = val; }
