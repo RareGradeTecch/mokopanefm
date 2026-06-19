@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>News — Mokopane FM 100.0 MHz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold:    #F5A800;
+      --gold-lt: #FFC935;
+      --gold-dk: #D48900;
+      --maroon:  #7A1515;
+      --maroon-dk: #4E0D0D;
+      --black:   #0A0A0A;
+      --dark:    #111111;
+      --dark2:   #1A1A1A;
+      --dark3:   #222222;
+      --white:   #FFFFFF;
+      --offwhite:#F5F0E8;
+      --muted:   #999999;
+      --bg: var(--dark);
+      --text: var(--white);
+      --card-bg: var(--dark3);
+      --nav-bg: rgba(10, 10, 10, 0.92);
+    }
+
+    [data-theme="light"] {
+      --bg: var(--offwhite);
+      --text: var(--black);
+      --card-bg: var(--white);
+      --dark2: #E5E0D8;
+      --dark3: #FFFFFF;
+      --nav-bg: rgba(245, 240, 232, 0.92);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+    /* ═══════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 18px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+      background: var(--nav-bg);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 rgba(245, 168, 0, 0.15);
+    }
+
+    .nav-logo img {
+      height: 52px;
+      width: auto;
+      filter: drop-shadow(0 0 12px rgba(245, 168, 0, 0.4));
+      transition: filter 0.3s;
+    }
+    .nav-logo img:hover {
+      filter: drop-shadow(0 0 22px rgba(245, 168, 0, 0.75));
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      opacity: 0.8;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      position: relative;
+      transition: color 0.25s, opacity 0.25s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a.active { color: var(--gold); opacity: 1; }
+    .nav-links a.active::after { width: 100%; }
+    .nav-links a:hover { color: var(--gold); opacity: 1; }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .theme-toggle {
+      width: 54px;
+      height: 28px;
+      background: var(--dark3);
+      border: 1px solid rgba(245, 168, 0, 0.3);
+      border-radius: 30px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+    }
+
+    .theme-toggle .toggle-circle {
+      width: 20px;
+      height: 20px;
+      background: var(--gold);
+      border-radius: 50%;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    [data-theme="light"] .theme-toggle .toggle-circle {
+      transform: translateX(24px);
+    }
+
+    .nav-listen {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 50px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
+      box-shadow: 0 0 20px rgba(245, 168, 0, 0.35);
+    }
+
+    .nav-listen:hover {
+      background: var(--gold-lt);
+      box-shadow: 0 0 32px rgba(245, 168, 0, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .nav-listen .dot {
+      width: 8px;
+      height: 8px;
+      background: var(--maroon);
+      border-radius: 50%;
+      animation: pulse 1.8s infinite;
+    }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.3s; }
+
+    /* ═══════════════════════════════════════
+       PAGE HEADER
+    ═══════════════════════════════════════ */
+    .page-header {
+      padding: 180px 48px 64px;
+      max-width: 1280px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 7vw, 88px);
+      line-height: 0.95;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin-bottom: 18px;
+    }
+
+    .page-title em {
+      color: var(--gold);
+      font-style: normal;
+    }
+
+    .page-sub {
+      font-size: 15px;
+      color: var(--text);
+      opacity: 0.6;
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      background: rgba(76, 175, 109, 0.1);
+      border: 1px solid rgba(76, 175, 109, 0.35);
+      border-radius: 30px;
+      color: #4CAF6D;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .live-pill .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4CAF6D;
+      box-shadow: 0 0 8px rgba(76,175,109,0.7);
+      animation: pulse 1.6s infinite;
+    }
+
+    /* ═══════════════════════════════════════
+       NEWS FEED
+    ═══════════════════════════════════════ */
+    .news-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 48px 120px;
+    }
+
+    .news-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .news-row {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 32px;
+      background: var(--card-bg);
+      border: 1px solid rgba(245,168,0,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: rowIn 0.6s ease forwards;
+    }
+
+    @keyframes rowIn { to { opacity: 1; transform: none; } }
+
+    .news-row:hover {
+      border-color: rgba(245,168,0,0.28);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(245,168,0,0.08);
+    }
+
+    .news-row.no-img { grid-template-columns: 1fr; }
+
+    .news-row-img {
+      width: 100%;
+      height: 100%;
+      min-height: 200px;
+      object-fit: cover;
+      display: block;
+      background: var(--dark3);
+    }
+
+    .news-row-body {
+      padding: 28px 30px 28px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .news-row.no-img .news-row-body { padding: 30px 32px; }
+
+    .news-row-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .news-row-date {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .news-row-new {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--gold);
+      padding: 3px 9px;
+      border-radius: 20px;
+      animation: pulse 1.6s infinite;
+    }
+
+    .news-row-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px;
+      letter-spacing: 0.015em;
+      line-height: 1.1;
+      color: var(--text);
+    }
+
+    .news-row-excerpt {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: var(--text);
+      opacity: 0.65;
+      max-width: 640px;
+    }
+
+    .news-row-link {
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      width: fit-content;
+    }
+    .news-row-link:hover { text-decoration: underline; }
+
+    /* Flash highlight applied briefly when a brand-new item streams in live */
+    .news-row.flash {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(245,168,0,0.4), 0 20px 50px rgba(0,0,0,0.4), 0 0 40px rgba(245,168,0,0.25);
+    }
+
+    .news-empty {
+      text-align: center;
+      padding: 100px 24px;
+      color: var(--text);
+      opacity: 0.55;
+    }
+
+    .news-empty h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 30px;
+      letter-spacing: 0.02em;
+      margin-bottom: 10px;
+      opacity: 1;
+    }
+
+    .news-empty p { font-size: 14px; max-width: 360px; margin: 0 auto; line-height: 1.6; }
+
+    .news-skeleton {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .skel-row {
+      height: 200px;
+      border-radius: 20px;
+      background: linear-gradient(100deg, var(--dark3) 30%, rgba(255,255,255,0.06) 45%, var(--dark3) 60%);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s infinite;
+    }
+
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    @media (max-width: 750px) {
+      .news-row { grid-template-columns: 1fr; }
+      .news-row-img { min-height: 180px; }
+      .news-row-body { padding: 22px 24px 26px; }
+      .news-row-title { font-size: 26px; }
+    }
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    footer {
+      background: #060606;
+      border-top: 1px solid rgba(245,168,0,0.12);
+      padding: 72px 48px 0;
+    }
+
+    .footer-grid {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 56px;
+      padding-bottom: 56px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .footer-brand img {
+      height: 60px;
+      filter: brightness(1.1) drop-shadow(0 0 16px rgba(245,168,0,0.3));
+      margin-bottom: 20px;
+    }
+
+    .footer-tagline {
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.5);
+      max-width: 260px;
+      margin-bottom: 24px;
+    }
+
+    .footer-col h5 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: color 0.25s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    .freq-badge {
+      display: inline-block;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      line-height: 1;
+      letter-spacing: 0.04em;
+      color: rgba(245,168,0,0.15);
+      margin-top: 8px;
+      margin-bottom: 12px;
+    }
+
+    .footer-bottom {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.04em;
+    }
+
+    /* ═══════════════════════════════════════
+       FLOATING ACTION PLAYER
+    ═══════════════════════════════════════ */
+    .floating-player-wrap {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: 1500;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      opacity: 1;
+      pointer-events: auto;
+      transition: opacity 0.4s ease;
+    }
+
+    .sticky-player {
+      width: 64px;
+      height: 64px;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      cursor: pointer;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.3), 0 0 20px rgba(245, 168, 0, 0.4);
+      transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      overflow: hidden;
+      padding: 0 10px;
+      border: none;
+    }
+
+    .sticky-player:hover {
+      width: 240px;
+      border-radius: 60px;
+      padding: 0 24px;
+    }
+
+    .player-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.3s;
+    }
+
+    .sticky-player:hover .player-btn { transform: scale(1.1); }
+    .player-btn svg { color: var(--gold); margin-left: 2px; }
+
+    .player-info-pill {
+      display: flex;
+      flex-direction: column;
+      margin-left: 14px;
+      opacity: 0;
+      transform: translateX(10px);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .sticky-player:hover .player-info-pill {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .player-name { font-size: 13px; font-weight: 800; color: var(--black); letter-spacing: 0.02em; line-height: 1.2; }
+    .player-freq { font-size: 11px; font-weight: 700; color: var(--maroon); letter-spacing: 0.05em; }
+
+    .eq-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+      margin-left: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .sticky-player:hover .eq-bars { opacity: 1; }
+
+    .eq-bar { width: 2px; background: var(--black); border-radius: 1px; animation: eqAnim 0.8s infinite ease-in-out; }
+    .eq-bars.paused .eq-bar { animation-play-state: paused; height: 3px !important; }
+
+    /* ── PLAYER MODAL / BOTTOM SHEET ── */
+    .player-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(15px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .player-modal.active { opacity: 1; pointer-events: auto; }
+
+    .modal-close {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      width: 48px;
+      height: 48px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 2002;
+    }
+    .modal-close:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+    .modal-content {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      padding: 40px;
+      background: var(--dark2);
+      border: 1px solid rgba(245, 168, 0, 0.2);
+      border-radius: 40px;
+      transform: translateY(40px) scale(0.95);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      z-index: 2001;
+    }
+    .player-modal.active .modal-content { transform: translateY(0) scale(1); }
+
+    .modal-logo { width: 140px; margin: 0 auto 24px; filter: drop-shadow(0 0 30px rgba(245, 168, 0, 0.4)); }
+
+    .modal-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: rgba(229, 62, 62, 0.1);
+      border: 1px solid rgba(229, 62, 62, 0.3);
+      border-radius: 30px;
+      color: #E53E3E;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .live-dot { width: 8px; height: 8px; background: #E53E3E; border-radius: 50%; animation: pulse 1.4s infinite; }
+
+    .modal-show-name { font-family: 'Bebas Neue', sans-serif; font-size: 48px; line-height: 1.1; color: var(--white); margin-bottom: 8px; }
+    .modal-show-info { font-size: 15px; color: var(--gold); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 32px; }
+
+    .modal-controls { display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%; }
+
+    .iono-player-wrap { width: 100%; border-radius: 12px; overflow: hidden; }
+    .iono-player-wrap iframe { display: block; border-radius: 12px; }
+
+    .listening-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 28px;
+      border-radius: 50px;
+      background: rgba(245,168,0,0.1);
+      border: 1px solid rgba(245,168,0,0.3);
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+      width: 100%;
+      justify-content: center;
+    }
+    .listening-toggle:hover { background: rgba(245,168,0,0.18); border-color: var(--gold); }
+    .listening-toggle.active { background: rgba(245,168,0,0.15); border-color: var(--gold); color: var(--gold); }
+
+    .listening-toggle-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
+    .listening-toggle.active .listening-toggle-dot { background: #4ADE80; animation: pulse 1.4s infinite; }
+
+    .drag-handle { display: none; width: 40px; height: 5px; background: rgba(255, 255, 255, 0.2); border-radius: 10px; margin: 0 auto 20px; }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.7); } }
+    @keyframes eqAnim { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
+
+    @media (max-width: 850px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-listen { display: none; }
+      .nav-links.mobile-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--nav-bg);
+        backdrop-filter: blur(18px);
+        flex-direction: column;
+        gap: 0;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: max-height 0.4s ease, opacity 0.3s ease, transform 0.3s ease, padding 0.4s ease;
+        padding: 0 32px;
+      }
+      .nav-links.mobile-menu.open { max-height: 400px; opacity: 1; transform: translateY(0); padding: 24px 32px; }
+      .nav-links.mobile-menu li { opacity: 0; transform: translateY(-6px); transition: all 0.35s ease; padding-bottom: 18px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .nav-links.mobile-menu.open li { opacity: 1; transform: translateY(0); }
+      .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .hamburger.active span:nth-child(2) { opacity: 0; }
+      .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+      .page-header { padding: 140px 24px 48px; }
+      .news-wrap { padding: 0 24px 100px; }
+
+      .player-modal { align-items: flex-end; }
+      .modal-content {
+        max-width: 100%;
+        border-radius: 28px 28px 0 0;
+        padding: 28px 24px 36px;
+      }
+      .drag-handle { display: block; }
+      .player-modal.active .modal-content { transform: translateY(0); }
+      .modal-close { display: none; }
+      .modal-show-name { font-size: 38px; }
+      .floating-player-wrap { bottom: 20px; right: 20px; }
+      .sticky-player { width: 56px; height: 56px; padding: 0 6px; }
+      .sticky-player:hover { width: 56px; border-radius: 50%; padding: 0 6px; }
+      .sticky-player:hover .player-info-pill, .sticky-player:hover .eq-bars { display: none; }
+      .sticky-player.expanded {
+        width: 220px;
+        border-radius: 60px;
+        padding: 0 20px;
+      }
+      .sticky-player.expanded .player-info-pill {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+        display: flex;
+      }
+      .sticky-player.expanded .eq-bars { opacity: 1; display: flex; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 14px 20px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+      .footer-bottom { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <nav id="navbar">
+    <a href="main-website-live-synced.html" class="nav-logo">
+      <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM Logo" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="main-website-live-synced.html#about">About</a></li>
+      <li><a href="main-website-live-synced.html#shows">Shows</a></li>
+      <li><a href="news.html" class="active">News</a></li>
+      <li><a href="main-website-live-synced.html#live">Stream</a></li>
+      <li><a href="main-website-live-synced.html#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <div class="toggle-circle">
+          <svg id="themeIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+      </div>
+      <button onclick="openPlayerModal()" class="nav-listen" id="navListenBtn">
+        <span class="dot"></span>
+        Listen Live
+      </button>
+      <div class="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <header class="page-header">
+    <div class="live-pill"><span class="dot"></span>Synced live from the newsroom</div>
+    <p class="section-label">Updates</p>
+    <h1 class="page-title">Latest <em>News</em></h1>
+    <p class="page-sub">Everything posted by the Mokopane FM newsroom, updated the moment it's published — no refresh needed.</p>
+  </header>
+
+  <div class="news-wrap">
+    <div class="news-skeleton" id="newsSkeleton">
+      <div class="skel-row"></div>
+      <div class="skel-row"></div>
+      <div class="skel-row"></div>
+    </div>
+    <div class="news-feed" id="newsFeed"></div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" />
+        <div class="freq-badge">100.0</div>
+        <p class="footer-tagline">The community voice of Mogalakwena and the Waterberg region. Broadcasting local stories, culture, and music 24/7.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Navigate</h5>
+        <ul class="footer-links">
+          <li><a href="main-website-live-synced.html#home">Home</a></li>
+          <li><a href="main-website-live-synced.html#about">About Us</a></li>
+          <li><a href="main-website-live-synced.html#shows">Shows</a></li>
+          <li><a href="news.html">News</a></li>
+          <li><a href="main-website-live-synced.html#live">Live Stream</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Connect</h5>
+        <ul class="footer-links">
+          <li><a href="tel:0154911208">015 491 1208</a></li>
+          <li><a href="mailto:admin@mokopanefm.co.za">admin@mokopanefm.co.za</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><p class="footer-copy">&copy; 2026 Mokopane FM Community Radio Station. All rights reserved.</p></div>
+  </footer>
+
+  <div class="floating-player-wrap visible" id="floatingPlayerWrap">
+    <div class="sticky-player" id="stickyPlayer" onclick="handleStickyPlayerClick(event)">
+      <button class="player-btn" id="playerBtn" onclick="event.stopPropagation(); openPlayerModal()" aria-label="Listen Live">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="player-info-pill">
+        <span class="player-name">Mokopane FM</span>
+        <span class="player-freq" id="stickyStatusText">100.0 MHz · LIVE</span>
+      </div>
+      <div class="eq-bars paused" id="eqBars">
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="player-modal" id="playerModal">
+    <button class="modal-close" onclick="closePlayerModal()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="modal-content" id="modalContent">
+      <div class="drag-handle"></div>
+      <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" class="modal-logo" />
+      <div class="modal-live-badge" id="modalLiveBadge"><span class="live-dot"></span>On Air Now</div>
+      <h2 class="modal-show-name" id="modalShowName">Mokopane FM</h2>
+      <p class="modal-show-info" id="modalShowInfo">100.0 MHz · The Voice of Mogalakwena</p>
+      <div class="modal-controls">
+        <div class="iono-player-wrap">
+          <iframe src="https://iframe.iono.fm/s/154?layout=modern" width="100%" height="170" frameborder="0" referrerpolicy="origin" loading="lazy"></iframe>
+        </div>
+        <button class="listening-toggle" id="listeningToggle" onclick="toggleListening()">
+          <span class="listening-toggle-dot"></span>
+          <span id="listeningToggleText">I'm Listening</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const eqBars = document.getElementById('eqBars');
+    const playerModal = document.getElementById('playerModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalShowName = document.getElementById('modalShowName');
+    const modalShowInfo = document.getElementById('modalShowInfo');
+    let isListening = false;
+
+    const waveHTML = `<span style="display:inline-flex;align-items:flex-end;gap:2px;height:13px;margin-right:6px;vertical-align:middle;">
+      <span style="width:2px;border-radius:1px;background:currentColor;transform-origin:bottom;animation:eqAnim 0.7s infinite ease-in-out 0s;display:block;height:13px;"></span>
+      <span style="width:2px;border-radius:1px;background:currentColor;transform-origin:bottom;animation:eqAnim 0.7s infinite ease-in-out 0.15s;display:block;height:13px;"></span>
+      <span style="width:2px;border-radius:1px;background:currentColor;transform-origin:bottom;animation:eqAnim 0.7s infinite ease-in-out 0.3s;display:block;height:13px;"></span>
+      <span style="width:2px;border-radius:1px;background:currentColor;transform-origin:bottom;animation:eqAnim 0.7s infinite ease-in-out 0.45s;display:block;height:13px;"></span>
+    </span>`;
+
+    function setListeningUI(listening) {
+      isListening = listening;
+      const navBtn = document.getElementById('navListenBtn');
+      const stickyStatus = document.getElementById('stickyStatusText');
+      const toggleBtn = document.getElementById('listeningToggle');
+      const toggleText = document.getElementById('listeningToggleText');
+
+      if (listening) {
+        navBtn.innerHTML = waveHTML + 'Listening...';
+        stickyStatus.innerHTML = waveHTML + 'Listening...';
+        eqBars.classList.remove('paused');
+        toggleBtn.classList.add('active');
+        toggleText.textContent = 'Stop Listening';
+      } else {
+        navBtn.innerHTML = '<span class="dot"></span>Listen Live';
+        stickyStatus.innerHTML = '100.0 MHz · LIVE';
+        eqBars.classList.add('paused');
+        toggleBtn.classList.remove('active');
+        toggleText.textContent = "I'm Listening";
+      }
+    }
+
+    function toggleListening() { setListeningUI(!isListening); }
+
+    // ── Theme Logic ──
+    function toggleTheme() {
+      const body = document.body;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      const themeIcon = document.getElementById('themeIcon');
+      if (newTheme === 'light') {
+        themeIcon.innerHTML = '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
+      } else {
+        themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+      }
+    }
+
+    // ── Modal logic ──
+    function openPlayerModal() {
+      playerModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closePlayerModal() {
+      playerModal.classList.remove('active');
+      document.body.style.overflow = '';
+      modalContent.style.transform = '';
+      setTimeout(() => {
+        modalShowName.innerText = "Mokopane FM";
+        modalShowInfo.innerText = "100.0 MHz · The Voice of Mogalakwena";
+      }, 400);
+      if (isListening) setListeningUI(false);
+    }
+    playerModal.addEventListener('click', (e) => { if (e.target === playerModal) closePlayerModal(); });
+
+    // ── Mobile Drag to Close ──
+    let startY = 0, currentY = 0, isDragging = false;
+    modalContent.addEventListener('touchstart', (e) => {
+      if (window.innerWidth <= 850) { startY = e.touches[0].clientY; isDragging = true; modalContent.style.transition = 'none'; }
+    }, { passive: true });
+    modalContent.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      currentY = e.touches[0].clientY;
+      const deltaY = currentY - startY;
+      if (deltaY > 0) modalContent.style.transform = `translateY(${deltaY}px)`;
+    }, { passive: true });
+    modalContent.addEventListener('touchend', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      modalContent.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
+      if (currentY - startY > 150) closePlayerModal(); else modalContent.style.transform = 'translateY(0)';
+    });
+
+    // ── Sticky Player Click Routine ──
+    function handleStickyPlayerClick(e) {
+      const sticky = document.getElementById('stickyPlayer');
+      if (window.innerWidth <= 850) {
+        if (!sticky.classList.contains('expanded')) {
+          sticky.classList.add('expanded');
+        } else {
+          openPlayerModal();
+        }
+      } else {
+        openPlayerModal();
+      }
+    }
+    window.addEventListener('click', (e) => {
+      const sticky = document.getElementById('stickyPlayer');
+      if (sticky && !sticky.contains(e.target)) sticky.classList.remove('expanded');
+    });
+
+    // ── Mobile nav ──
+    let menuOpen = false;
+    const navLinks = document.querySelector('.nav-links');
+    const hamburgerEl = document.querySelector('.hamburger');
+    navLinks.classList.add('mobile-menu');
+    function toggleMenu() {
+      menuOpen = !menuOpen;
+      navLinks.classList.toggle('open', menuOpen);
+      hamburgerEl.classList.toggle('active', menuOpen);
+    }
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => { menuOpen = false; navLinks.classList.remove('open'); hamburgerEl.classList.remove('active'); });
+    });
+  </script>
+
+  <!-- ═══════════════════════════════════════ LIVE DATA FROM FIREBASE ═══════════════════════════════════════
+       Reads the same /news node the admin dashboard writes to. onValue()
+       keeps an open, persistent connection — any item the newsroom adds,
+       edits, reorders, or deletes in admin-dashboard.html appears here
+       within moments, with no page refresh. Items present on first load
+       render immediately with no flash; anything that streams in *after*
+       that gets a brief gold "Just in" highlight so returning readers can
+       spot what's new.                                                 ═══ -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCh7Ute6LeSAxcNDEQwZg5m0cA4ujnLCfg",
+      authDomain: "test-17881.firebaseapp.com",
+      projectId: "test-17881",
+      storageBucket: "test-17881.firebasestorage.app",
+      messagingSenderId: "1057428047643",
+      appId: "1:1057428047643:web:f3801c0d933225a5cd35be",
+      databaseURL: "https://test-17881-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str ?? '';
+      return d.innerHTML;
+    }
+
+    function sortedEntries(cache) {
+      // Newest first: prefer explicit order, then createdAt, then updatedAt.
+      return Object.entries(cache || {}).sort((a, b) => {
+        const ao = a[1].order, bo = b[1].order;
+        if (ao !== undefined && bo !== undefined && ao !== bo) return bo - ao;
+        return (b[1].createdAt || 0) - (a[1].createdAt || 0);
+      });
+    }
+
+    function formatNewsDate(isoDate) {
+      const d = new Date(isoDate + 'T00:00:00');
+      if (isNaN(d.getTime())) return isoDate;
+      return d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function newsRowHTML(id, item, isNew) {
+      const title = item.title || 'Untitled update';
+      const body = item.body || '';
+      const date = item.date ? formatNewsDate(item.date) : '';
+      const link = item.link || '';
+      const hasImg = !!item.imageUrl;
+      const imgHtml = hasImg
+        ? `<img class="news-row-img" src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(title)}" />`
+        : '';
+      const linkHtml = link
+        ? `<a class="news-row-link" href="${escapeHtml(link)}" target="_blank" rel="noopener">Read more
+             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+           </a>`
+        : '';
+      return `
+        <div class="news-row${hasImg ? '' : ' no-img'}" data-id="${id}">
+          ${imgHtml}
+          <div class="news-row-body">
+            <div class="news-row-top">
+              ${date ? `<span class="news-row-date">${escapeHtml(date)}</span>` : ''}
+              ${isNew ? `<span class="news-row-new">Just in</span>` : ''}
+            </div>
+            <h2 class="news-row-title">${escapeHtml(title)}</h2>
+            ${body ? `<p class="news-row-excerpt">${escapeHtml(body)}</p>` : ''}
+            ${linkHtml}
+          </div>
+        </div>`;
+    }
+
+    const newsFeed = document.getElementById('newsFeed');
+    const newsSkeleton = document.getElementById('newsSkeleton');
+
+    let knownIds = null; // null = first snapshot not yet processed
+
+    onValue(ref(db, 'news'), (snap) => {
+      newsSkeleton.style.display = 'none';
+      const entries = sortedEntries(snap.val());
+
+      if (entries.length === 0) {
+        newsFeed.innerHTML = `
+          <div class="news-empty">
+            <h3>No news posted yet</h3>
+            <p>Check back soon — anything published by the Mokopane FM newsroom will appear here instantly.</p>
+          </div>`;
+        knownIds = new Set();
+        return;
+      }
+
+      const currentIds = new Set(entries.map(([id]) => id));
+      const isFirstLoad = knownIds === null;
+
+      newsFeed.innerHTML = entries.map(([id, item], i) => {
+        const isNew = !isFirstLoad && !knownIds.has(id);
+        const row = newsRowHTML(id, item, isNew);
+        return row.replace('<div class="news-row', `<div style="animation-delay:${Math.min(i, 8) * 0.05}s" class="news-row`);
+      }).join('');
+
+      // Briefly flash any genuinely-new row, then settle.
+      if (!isFirstLoad) {
+        entries.forEach(([id]) => {
+          if (!knownIds.has(id)) {
+            const el = newsFeed.querySelector(`.news-row[data-id="${id}"]`);
+            if (el) {
+              el.classList.add('flash');
+              setTimeout(() => el.classList.remove('flash'), 2600);
+            }
+          }
+        });
+      }
+
+      knownIds = currentIds;
+    }, (err) => {
+      console.error('News sync error:', err);
+      newsSkeleton.style.display = 'none';
+      newsFeed.innerHTML = `
+        <div class="news-empty">
+          <h3>Couldn't load news right now</h3>
+          <p>Please refresh the page in a moment.</p>
+        </div>`;
+    });
+  </script>
+</body>
+</html>
