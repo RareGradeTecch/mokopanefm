@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>News — Mokopane FM 100.0 MHz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold:    #F5A800;
+      --gold-lt: #FFC935;
+      --gold-dk: #D48900;
+      --maroon:  #7A1515;
+      --maroon-dk: #4E0D0D;
+      --black:   #0A0A0A;
+      --dark:    #111111;
+      --dark2:   #1A1A1A;
+      --dark3:   #222222;
+      --white:   #FFFFFF;
+      --offwhite:#F5F0E8;
+      --muted:   #999999;
+      --bg: var(--dark);
+      --text: var(--white);
+      --card-bg: var(--dark3);
+      --nav-bg: rgba(10, 10, 10, 0.92);
+    }
+
+    [data-theme="light"] {
+      --bg: var(--offwhite);
+      --text: var(--black);
+      --card-bg: var(--white);
+      --dark2: #E5E0D8;
+      --dark3: #FFFFFF;
+      --nav-bg: rgba(245, 240, 232, 0.92);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+    a { color: inherit; }
+
+    /* ═══════════════════════════════════════
+       NAVBAR (same as rest of site)
+    ═══════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 18px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+      background: var(--nav-bg);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 1px 0 rgba(245, 168, 0, 0.15);
+    }
+
+    .nav-logo img {
+      height: 52px;
+      width: auto;
+      filter: drop-shadow(0 0 12px rgba(245, 168, 0, 0.4));
+      transition: filter 0.3s;
+    }
+    .nav-logo img:hover { filter: drop-shadow(0 0 22px rgba(245, 168, 0, 0.75)); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text);
+      opacity: 0.8;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      position: relative;
+      transition: color 0.25s, opacity 0.25s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a.active { color: var(--gold); opacity: 1; }
+    .nav-links a.active::after { width: 100%; }
+    .nav-links a:hover { color: var(--gold); opacity: 1; }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+
+    .theme-toggle {
+      width: 54px;
+      height: 28px;
+      background: var(--dark3);
+      border: 1px solid rgba(245, 168, 0, 0.3);
+      border-radius: 30px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      padding: 0 4px;
+    }
+
+    .theme-toggle .toggle-circle {
+      width: 20px;
+      height: 20px;
+      background: var(--gold);
+      border-radius: 50%;
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    [data-theme="light"] .theme-toggle .toggle-circle { transform: translateX(24px); }
+
+    .nav-listen {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 50px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
+      box-shadow: 0 0 20px rgba(245, 168, 0, 0.35);
+    }
+    .nav-listen:hover { background: var(--gold-lt); box-shadow: 0 0 32px rgba(245, 168, 0, 0.6); transform: translateY(-1px); }
+    .nav-listen .dot { width: 8px; height: 8px; background: var(--maroon); border-radius: 50%; animation: pulse 1.8s infinite; }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.3s; }
+
+    /* ═══════════════════════════════════════
+       ARTICLE LAYOUT
+    ═══════════════════════════════════════ */
+    .article-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 150px 48px 100px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+      opacity: 0.6;
+      text-decoration: none;
+      margin-bottom: 32px;
+      transition: opacity 0.25s, color 0.25s;
+    }
+    .back-link:hover { opacity: 1; color: var(--gold); }
+
+    .article-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 56px;
+      align-items: start;
+    }
+
+    .article-media { position: sticky; top: 110px; }
+
+    .article-imgwrap {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      border-radius: 22px;
+      overflow: hidden;
+      background: var(--dark3);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    }
+    .article-imgwrap.no-img {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, #2a2a2a 0%, #444444 100%);
+    }
+    .article-imgwrap.no-img svg { opacity: 0.3; }
+    .article-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .article-content { min-width: 0; }
+
+    .article-date {
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .article-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(34px, 4.2vw, 54px);
+      line-height: 1.04;
+      letter-spacing: 0.01em;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+
+    /* ── Collapsible / expandable story body ── */
+    .article-body-wrap { position: relative; }
+
+    .article-body {
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text);
+      opacity: 0.85;
+      white-space: pre-wrap;
+      max-height: 420px;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .article-body.expanded { max-height: 4000px; }
+
+    .article-fade {
+      position: absolute;
+      bottom: 52px;
+      left: 0;
+      right: 0;
+      height: 90px;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .article-fade.hidden { opacity: 0; pointer-events: none; }
+
+    .article-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      padding: 0;
+    }
+    .article-toggle:hover { color: var(--gold-lt); }
+    .article-toggle svg { transition: transform 0.3s; }
+    .article-toggle.open svg { transform: rotate(180deg); }
+
+    .article-link {
+      margin-top: 26px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 26px;
+      border-radius: 50px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.25s;
+    }
+    .article-link:hover { background: var(--gold-lt); }
+
+    /* ── Engagement bar ── */
+    .engage-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 40px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(245,168,0,0.15);
+      flex-wrap: wrap;
+    }
+
+    .engage-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border-radius: 50px;
+      background: var(--card-bg);
+      border: 1px solid rgba(245,168,0,0.18);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .engage-btn:hover { border-color: var(--gold); transform: translateY(-1px); }
+    .engage-btn svg { flex-shrink: 0; transition: transform 0.2s; }
+    .engage-btn .count { opacity: 0.65; font-weight: 600; }
+
+    .engage-btn.like.liked { background: rgba(245,168,0,0.14); border-color: var(--gold); color: var(--gold); }
+    .engage-btn.like.liked svg { fill: var(--gold); stroke: var(--gold); }
+    .engage-btn.like.pulse svg { animation: likePulse 0.4s ease; }
+    @keyframes likePulse { 50% { transform: scale(1.35); } }
+
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--card-bg);
+      border: 1px solid rgba(245,168,0,0.3);
+      color: var(--text);
+      padding: 12px 22px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+      z-index: 3000;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Comments ── */
+    .comments-section { margin-top: 48px; }
+
+    .comments-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+    }
+
+    .comment-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 20px;
+      background: var(--card-bg);
+      border: 1px solid rgba(245,168,0,0.12);
+      border-radius: 18px;
+      margin-bottom: 28px;
+    }
+
+    .comment-form input,
+    .comment-form textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      resize: vertical;
+      transition: border-color 0.25s;
+    }
+    .comment-form input:focus, .comment-form textarea:focus { outline: none; border-color: var(--gold); }
+    .comment-form textarea { min-height: 84px; }
+
+    .comment-submit {
+      align-self: flex-end;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 24px;
+      border-radius: 50px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: background 0.25s, opacity 0.25s;
+    }
+    .comment-submit:hover { background: var(--gold-lt); }
+    .comment-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .comment-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .comment-item {
+      padding: 16px 18px;
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+    }
+
+    .comment-item-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .comment-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--black);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .comment-name { font-size: 13.5px; font-weight: 700; }
+    .comment-time { font-size: 11px; opacity: 0.5; font-weight: 500; }
+    .comment-text { font-size: 14px; line-height: 1.6; opacity: 0.85; white-space: pre-wrap; }
+
+    .comments-empty { font-size: 13.5px; opacity: 0.55; padding: 8px 2px; }
+
+    /* ── Loading / not-found states ── */
+    .article-skel { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 56px; }
+    .skel-block { border-radius: 22px; background: linear-gradient(100deg, var(--dark3) 30%, rgba(255,255,255,0.06) 45%, var(--dark3) 60%); background-size: 200% 100%; animation: shimmer 1.6s infinite; }
+    .skel-img { aspect-ratio: 4/5; }
+    .skel-line { height: 16px; margin-bottom: 12px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    .article-notfound { text-align: center; padding: 100px 24px; opacity: 0.7; }
+    .article-notfound h2 { font-family: 'Bebas Neue', sans-serif; font-size: 34px; margin-bottom: 12px; }
+    .article-notfound a { color: var(--gold); font-weight: 700; text-decoration: none; }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.7); } }
+
+    /* ═══════════════════════════════════════
+       FOOTER (same as rest of site)
+    ═══════════════════════════════════════ */
+    footer { background: #060606; border-top: 1px solid rgba(245,168,0,0.12); padding: 72px 48px 0; margin-top: 40px; }
+    .footer-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; padding-bottom: 56px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .footer-brand img { height: 60px; filter: brightness(1.1) drop-shadow(0 0 16px rgba(245,168,0,0.3)); margin-bottom: 20px; }
+    .footer-tagline { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.5); max-width: 260px; margin-bottom: 24px; }
+    .footer-col h5 { font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 12px; }
+    .footer-links a { font-size: 14px; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.25s; display: inline-flex; align-items: center; gap: 6px; }
+    .footer-links a:hover { color: var(--gold); }
+    .freq-badge { display: inline-block; font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 1; letter-spacing: 0.04em; color: rgba(245,168,0,0.15); margin-top: 8px; margin-bottom: 12px; }
+    .footer-bottom { max-width: 1280px; margin: 0 auto; padding: 24px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 0.04em; }
+
+    @media (max-width: 850px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .nav-listen { display: none; }
+      .nav-links.mobile-menu {
+        display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--nav-bg); padding: 0 32px; gap: 0; border-bottom: 1px solid rgba(245,168,0,0.15); max-height: 0; opacity: 0; overflow: hidden; transform: translateY(-8px); transition: all 0.4s cubic-bezier(0.22,1,0.36,1);
+      }
+      .nav-links.mobile-menu.open { max-height: 400px; opacity: 1; transform: translateY(0); padding: 24px 32px; }
+      .nav-links.mobile-menu li { opacity: 0; transform: translateY(-6px); transition: all 0.35s ease; padding-bottom: 18px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .nav-links.mobile-menu.open li { opacity: 1; transform: translateY(0); }
+      .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .hamburger.active span:nth-child(2) { opacity: 0; }
+      .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+      .article-wrap { padding: 130px 24px 80px; }
+      .article-grid, .article-skel { grid-template-columns: 1fr; gap: 28px; }
+      .article-media { position: static; }
+      .article-imgwrap { aspect-ratio: 16/10; }
+      .article-body { max-height: 260px; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 14px 20px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+      .footer-bottom { padding: 24px 20px; }
+      .article-title { font-size: 32px; }
+      .engage-btn { padding: 10px 16px; font-size: 12.5px; }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <nav id="navbar">
+    <a href="main-website-live-synced.html" class="nav-logo">
+      <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM Logo" />
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">About</a></li>
+      <li><a href="index.html">Shows</a></li>
+      <li><a href="news.html" class="active">News</a></li>
+      <li><a href="index.html">Stream</a></li>
+      <li><a href="index.html">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <div class="toggle-circle">
+          <svg id="themeIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+      </div>
+      <a href="news.html" class="nav-listen"><span class="dot"></span>All News</a>
+      <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <div class="article-wrap">
+    <a href="news.html" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to News
+    </a>
+
+    <!-- Skeleton, shown until the story loads -->
+    <div class="article-skel" id="articleSkel">
+      <div class="skel-block skel-img"></div>
+      <div>
+        <div class="skel-block skel-line" style="width:40%;height:12px;"></div>
+        <div class="skel-block skel-line" style="width:90%;height:38px;margin-top:14px;"></div>
+        <div class="skel-block skel-line" style="width:100%;margin-top:24px;"></div>
+        <div class="skel-block skel-line" style="width:95%;"></div>
+        <div class="skel-block skel-line" style="width:85%;"></div>
+        <div class="skel-block skel-line" style="width:70%;"></div>
+      </div>
+    </div>
+
+    <!-- Not-found state -->
+    <div class="article-notfound" id="articleNotFound" style="display:none;">
+      <h2>Story not found</h2>
+      <p>It may have been removed. <a href="news.html">Head back to the news feed →</a></p>
+    </div>
+
+    <!-- Actual story, shown once loaded -->
+    <div class="article-grid" id="articleGrid" style="display:none;">
+      <div class="article-media">
+        <div class="article-imgwrap" id="articleImgWrap"></div>
+      </div>
+
+      <div class="article-content">
+        <span class="article-date" id="articleDate"></span>
+        <h1 class="article-title" id="articleTitle"></h1>
+
+        <div class="article-body-wrap">
+          <div class="article-body" id="articleBody"></div>
+          <div class="article-fade" id="articleFade"></div>
+        </div>
+        <button class="article-toggle" id="articleToggle" style="display:none;" onclick="toggleArticleBody()">
+          <span id="articleToggleText">Read more</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+
+        <a class="article-link" id="articleLink" href="#" target="_blank" rel="noopener" style="display:none;">
+          Visit source
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+
+        <!-- Like / Comment / Share -->
+        <div class="engage-bar">
+          <button class="engage-btn like" id="likeBtn" onclick="handleLike()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.6z"/></svg>
+            Like <span class="count" id="likeCount">0</span>
+          </button>
+          <button class="engage-btn comment" onclick="focusCommentForm()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Comment <span class="count" id="commentCount">0</span>
+          </button>
+          <button class="engage-btn share" onclick="handleShare()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+            Share <span class="count" id="shareCount">0</span>
+          </button>
+        </div>
+
+        <!-- Comments -->
+        <div class="comments-section">
+          <h3 class="comments-heading">Comments</h3>
+          <form class="comment-form" id="commentForm" onsubmit="return submitComment(event)">
+            <input type="text" id="commentName" placeholder="Your name" maxlength="60" required />
+            <textarea id="commentText" placeholder="Write a comment..." maxlength="1000" required></textarea>
+            <button type="submit" class="comment-submit" id="commentSubmitBtn">Post Comment</button>
+          </form>
+          <div class="comment-list" id="commentList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="https://i.postimg.cc/L4brh0LL/lo.png" alt="Mokopane FM" />
+        <div class="freq-badge">100.0</div>
+        <p class="footer-tagline">The community voice of Mogalakwena and the Waterberg region. Broadcasting local stories, culture, and music 24/7.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Navigate</h5>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html">About Us</a></li>
+          <li><a href="index.html">Shows</a></li>
+          <li><a href="news.html">News</a></li>
+          <li><a href="index.html">Live Stream</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Connect</h5>
+        <ul class="footer-links">
+          <li><a href="tel:0154911208">015 491 1208</a></li>
+          <li><a href="mailto:admin@mokopanefm.co.za">admin@mokopanefm.co.za</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><p class="footer-copy">&copy; 2026 Mokopane FM Community Radio Station. All rights reserved.</p></div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ── Theme ──
+    function toggleTheme() {
+      const body = document.body;
+      const newTheme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      const themeIcon = document.getElementById('themeIcon');
+      themeIcon.innerHTML = newTheme === 'light'
+        ? '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/>'
+        : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+    }
+
+    // ── Mobile nav ──
+    let menuOpen = false;
+    const navLinks = document.querySelector('.nav-links');
+    const hamburgerEl = document.querySelector('.hamburger');
+    navLinks.classList.add('mobile-menu');
+    function toggleMenu() {
+      menuOpen = !menuOpen;
+      navLinks.classList.toggle('open', menuOpen);
+      hamburgerEl.classList.toggle('active', menuOpen);
+    }
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => { menuOpen = false; navLinks.classList.remove('open'); hamburgerEl.classList.remove('active'); });
+    });
+
+    // ── Toast ──
+    let toastTimer = null;
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2400);
+    }
+  </script>
+
+  <!-- ═══════════════════════════════════════ ARTICLE DATA + LIKE / COMMENT / SHARE (FIREBASE) ═══════════════════════════════════════
+       Reads the story from the same /news node the newsroom writes to.
+       Engagement (likes, shares, comments) lives in a separate /newsEngagement
+       node so it never gets overwritten when the admin dashboard edits or
+       resaves a story, and stays in sync in real time across everyone
+       viewing the page — and persists across refreshes for everyone.   ═══ -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue, runTransaction, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCh7Ute6LeSAxcNDEQwZg5m0cA4ujnLCfg",
+      authDomain: "test-17881.firebaseapp.com",
+      projectId: "test-17881",
+      storageBucket: "test-17881.firebasestorage.app",
+      messagingSenderId: "1057428047643",
+      appId: "1:1057428047643:web:f3801c0d933225a5cd35be",
+      databaseURL: "https://test-17881-default-rtdb.firebaseio.com"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str ?? '';
+      return d.innerHTML;
+    }
+
+    function formatNewsDate(isoDate) {
+      const d = new Date(isoDate + 'T00:00:00');
+      if (isNaN(d.getTime())) return isoDate;
+      return d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function formatCommentTime(ts) {
+      if (!ts) return '';
+      const diff = Date.now() - ts;
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'just now';
+      if (mins < 60) return `${mins}m ago`;
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return `${hrs}h ago`;
+      const days = Math.floor(hrs / 24);
+      if (days < 7) return `${days}d ago`;
+      return new Date(ts).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const storyId = params.get('id');
+
+    const articleSkel = document.getElementById('articleSkel');
+    const articleNotFound = document.getElementById('articleNotFound');
+    const articleGrid = document.getElementById('articleGrid');
+
+    if (!storyId) {
+      articleSkel.style.display = 'none';
+      articleNotFound.style.display = 'block';
+    } else {
+      // ── Load the story itself ──
+      onValue(ref(db, `news/${storyId}`), (snap) => {
+        const item = snap.val();
+        articleSkel.style.display = 'none';
+
+        if (!item) {
+          articleNotFound.style.display = 'block';
+          articleGrid.style.display = 'none';
+          return;
+        }
+
+        articleNotFound.style.display = 'none';
+        articleGrid.style.display = 'grid';
+
+        const title = item.title || 'Untitled update';
+        document.title = `${title} — Mokopane FM News`;
+
+        const imgWrap = document.getElementById('articleImgWrap');
+        imgWrap.innerHTML = item.imageUrl
+          ? `<img class="article-img" src="${escapeHtml(item.imageUrl)}" alt="${escapeHtml(title)}" />`
+          : `<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>`;
+        imgWrap.classList.toggle('no-img', !item.imageUrl);
+
+        const dateEl = document.getElementById('articleDate');
+        dateEl.textContent = item.date ? formatNewsDate(item.date) : '';
+        dateEl.style.display = item.date ? '' : 'none';
+
+        document.getElementById('articleTitle').textContent = title;
+
+        const bodyEl = document.getElementById('articleBody');
+        bodyEl.textContent = item.body || 'No further details were provided for this story.';
+
+        const linkEl = document.getElementById('articleLink');
+        if (item.link) { linkEl.href = item.link; linkEl.style.display = 'inline-flex'; }
+        else { linkEl.style.display = 'none'; }
+
+        // Work out, after render, whether the story is long enough to need collapsing.
+        requestAnimationFrame(setupCollapse);
+      }, (err) => {
+        console.error('Story sync error:', err);
+        articleSkel.style.display = 'none';
+        articleNotFound.style.display = 'block';
+      });
+
+      // ── Engagement: likes, shares, comment count/list ──
+      const engRef = ref(db, `newsEngagement/${storyId}`);
+      const likeBtn = document.getElementById('likeBtn');
+      const likeCountEl = document.getElementById('likeCount');
+      const commentCountEl = document.getElementById('commentCount');
+      const shareCountEl = document.getElementById('shareCount');
+      const commentList = document.getElementById('commentList');
+
+      let likedIds = [];
+      try { likedIds = JSON.parse(localStorage.getItem('mfmLikedNews') || '[]'); } catch (e) { likedIds = []; }
+
+      onValue(engRef, (snap) => {
+        const eng = snap.val() || {};
+        likeCountEl.textContent = eng.likes || 0;
+        shareCountEl.textContent = eng.shares || 0;
+
+        const comments = eng.comments || {};
+        const entries = Object.entries(comments).sort((a, b) => (b[1].createdAt || 0) - (a[1].createdAt || 0));
+        commentCountEl.textContent = entries.length;
+
+        commentList.innerHTML = entries.length
+          ? entries.map(([, c]) => {
+              const name = c.name || 'Anonymous';
+              const initial = name.trim().charAt(0).toUpperCase() || '?';
+              return `
+                <div class="comment-item">
+                  <div class="comment-item-head">
+                    <div class="comment-avatar">${escapeHtml(initial)}</div>
+                    <div>
+                      <div class="comment-name">${escapeHtml(name)}</div>
+                      <div class="comment-time">${formatCommentTime(c.createdAt)}</div>
+                    </div>
+                  </div>
+                  <div class="comment-text">${escapeHtml(c.text || '')}</div>
+                </div>`;
+            }).join('')
+          : `<p class="comments-empty">Be the first to comment on this story.</p>`;
+
+        likeBtn.classList.toggle('liked', likedIds.includes(storyId));
+      });
+
+      // ── Like / unlike (toggle), persisted in Firebase + localStorage ──
+      window.handleLike = function () {
+        const alreadyLiked = likedIds.includes(storyId);
+        const delta = alreadyLiked ? -1 : 1;
+
+        runTransaction(ref(db, `newsEngagement/${storyId}/likes`), (current) => (current || 0) + delta);
+
+        if (alreadyLiked) {
+          likedIds = likedIds.filter(id => id !== storyId);
+        } else {
+          likedIds.push(storyId);
+          likeBtn.classList.add('pulse');
+          setTimeout(() => likeBtn.classList.remove('pulse'), 400);
+        }
+        localStorage.setItem('mfmLikedNews', JSON.stringify(likedIds));
+        likeBtn.classList.toggle('liked', !alreadyLiked);
+      };
+
+      // ── Share: native share sheet where available, else copy link ──
+      window.handleShare = async function () {
+        const shareData = {
+          title: document.title,
+          text: `Read this on Mokopane FM: ${document.getElementById('articleTitle').textContent}`,
+          url: window.location.href
+        };
+        runTransaction(ref(db, `newsEngagement/${storyId}/shares`), (current) => (current || 0) + 1);
+
+        if (navigator.share) {
+          try { await navigator.share(shareData); } catch (e) { /* user cancelled — count still recorded */ }
+        } else {
+          try {
+            await navigator.clipboard.writeText(shareData.url);
+            showToast('Link copied to clipboard');
+          } catch (e) {
+            showToast('Copy this page\'s URL to share');
+          }
+        }
+      };
+
+      // ── Comments: add + persist ──
+      const savedName = localStorage.getItem('mfmCommenterName');
+      if (savedName) document.getElementById('commentName').value = savedName;
+
+      window.submitComment = function (e) {
+        e.preventDefault();
+        const nameInput = document.getElementById('commentName');
+        const textInput = document.getElementById('commentText');
+        const name = nameInput.value.trim();
+        const text = textInput.value.trim();
+        if (!name || !text) return false;
+
+        const btn = document.getElementById('commentSubmitBtn');
+        btn.disabled = true;
+
+        push(ref(db, `newsEngagement/${storyId}/comments`), {
+          name,
+          text,
+          createdAt: Date.now()
+        }).then(() => {
+          localStorage.setItem('mfmCommenterName', name);
+          textInput.value = '';
+          btn.disabled = false;
+        }).catch((err) => {
+          console.error('Comment error:', err);
+          showToast('Could not post comment — try again');
+          btn.disabled = false;
+        });
+
+        return false;
+      };
+
+      window.focusCommentForm = function () {
+        document.getElementById('commentText').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('commentText').focus();
+      };
+    }
+
+    // ── Collapsible story body ──
+    window.toggleArticleBody = function () {
+      const bodyEl = document.getElementById('articleBody');
+      const fadeEl = document.getElementById('articleFade');
+      const toggleBtn = document.getElementById('articleToggle');
+      const toggleText = document.getElementById('articleToggleText');
+      const isExpanded = bodyEl.classList.toggle('expanded');
+      fadeEl.classList.toggle('hidden', isExpanded);
+      toggleBtn.classList.toggle('open', isExpanded);
+      toggleText.textContent = isExpanded ? 'Read less' : 'Read more';
+      if (!isExpanded) bodyEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    function setupCollapse() {
+      const bodyEl = document.getElementById('articleBody');
+      const fadeEl = document.getElementById('articleFade');
+      const toggleBtn = document.getElementById('articleToggle');
+      const collapsedMax = window.innerWidth <= 850 ? 260 : 420;
+
+      bodyEl.classList.remove('expanded');
+      fadeEl.classList.remove('hidden');
+      toggleBtn.classList.remove('open');
+      document.getElementById('articleToggleText').textContent = 'Read more';
+
+      if (bodyEl.scrollHeight > collapsedMax + 20) {
+        toggleBtn.style.display = 'inline-flex';
+      } else {
+        toggleBtn.style.display = 'none';
+        fadeEl.classList.add('hidden');
+        bodyEl.classList.add('expanded');
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      if (document.getElementById('articleGrid').style.display !== 'none') setupCollapse();
+    });
+  </script>
+</body>
+</html>
