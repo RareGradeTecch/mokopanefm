@@ -1655,6 +1655,40 @@
     }
     .ad-popup-dot.active { background: var(--gold); width: 20px; border-radius: 4px; }
 
+    /* ── Manual prev/next — sit exactly over the (square) image area
+       so they stay put while the slide track scrolls underneath ── */
+    .ad-popup-imgnav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .ad-popup-arrow {
+      pointer-events: auto;
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(6px);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.2s;
+    }
+    .ad-popup-arrow svg { display: block; }
+    .ad-popup-arrow:hover { background: var(--gold); border-color: var(--gold); color: var(--black); transform: scale(1.08); }
+
     .ad-popup-badge {
       display: inline-block;
       font-size: 10px;
@@ -1831,8 +1865,8 @@
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#shows">Shows</a></li>
-      <li><a href="news.html">News</a></li>
-      <li><a href="stream.html">Stream</a></li>
+      <li id="newsNavItem" style="display:none;"><a href="news.html">News</a></li>
+      <li><a href="#live">Stream</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-right">
@@ -2028,6 +2062,14 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
       <div class="ad-popup-slides" id="adPopupSlides"></div>
+      <div class="ad-popup-imgnav" id="adPopupImgnav">
+        <button class="ad-popup-arrow prev" id="adPopupPrev" aria-label="Previous company">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="ad-popup-arrow next" id="adPopupNext" aria-label="Next company">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
       <div class="ad-popup-dots" id="adPopupDots"></div>
     </div>
   </div>
@@ -2411,6 +2453,9 @@
     const popupOverlay = document.getElementById('adPopupOverlay');
     const popupSlidesEl = document.getElementById('adPopupSlides');
     const popupDotsEl = document.getElementById('adPopupDots');
+    const popupImgnavEl = document.getElementById('adPopupImgnav');
+    const popupPrevBtn = document.getElementById('adPopupPrev');
+    const popupNextBtn = document.getElementById('adPopupNext');
     const popupClose = document.getElementById('adPopupClose');
 
     let popupSettings = null;
@@ -2423,7 +2468,7 @@
     let popupCurrentSlide = 0;
     let popupRotateTimer = null;
     let popupImpressedIds = new Set(); // avoid re-counting an impression as it loops around
-    const POPUP_ROTATE_MS = 3000;      // how long each company stays on screen before advancing
+    const POPUP_ROTATE_MS = 5000;      // how long each company stays on screen before advancing
 
     function popupCanShow(settings) {
       if (!settings || !settings.enabled) return false;
@@ -2491,6 +2536,7 @@
       popupDotsEl.innerHTML = popupSlideCount > 1
         ? eligible.map((_, i) => `<button class="ad-popup-dot${i === 0 ? ' active' : ''}" data-index="${i}" aria-label="Show company ${i + 1}"></button>`).join('')
         : '';
+      popupImgnavEl.style.display = popupSlideCount > 1 ? '' : 'none';
 
       renderPopupSlide();
       popupOverlay.classList.add('active');
@@ -2546,6 +2592,10 @@
       goToPopupSlide(Number(dot.dataset.index));
       restartPopupRotation();
     });
+
+    // Manual prev/next arrows
+    popupPrevBtn.addEventListener('click', () => { goToPopupSlide(popupCurrentSlide - 1); restartPopupRotation(); });
+    popupNextBtn.addEventListener('click', () => { goToPopupSlide(popupCurrentSlide + 1); restartPopupRotation(); });
 
     // Swipe support on touch devices
     let popupTouchStartX = null;
