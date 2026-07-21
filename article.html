@@ -772,7 +772,7 @@
         document.getElementById('articleTitle').textContent = title;
 
         const bodyEl = document.getElementById('articleBody');
-        bodyEl.textContent = item.body || 'No further details were provided for this story.';
+        bodyEl.textContent = item.storyline || item.body || 'No further details were provided for this story.';
 
         const linkEl = document.getElementById('articleLink');
         if (item.link) { linkEl.href = item.link; linkEl.style.display = 'inline-flex'; }
