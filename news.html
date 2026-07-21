@@ -921,6 +921,112 @@
 
     .drag-handle { display: none; width: 40px; height: 5px; background: rgba(255, 255, 255, 0.2); border-radius: 10px; margin: 0 auto 20px; }
 
+    /* ── SPONSORED POPUP AD ──
+       Controlled from the dashboard's Popup Ads tab. Shown to
+       news readers when an admin switches "Show popup ads on
+       the news page" on and at least one ad is active. */
+    .ad-popup-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2500;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(15px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      padding: 24px;
+    }
+    .ad-popup-modal.active { opacity: 1; pointer-events: auto; }
+
+    .ad-popup-close {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      z-index: 2502;
+    }
+    .ad-popup-close:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+    .ad-popup-content {
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      padding: 32px 28px;
+      background: var(--dark2);
+      border: 1px solid rgba(245, 168, 0, 0.2);
+      border-radius: 32px;
+      transform: translateY(40px) scale(0.95);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+      z-index: 2501;
+    }
+    .ad-popup-modal.active .ad-popup-content { transform: translateY(0) scale(1); }
+
+    .ad-popup-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 14px;
+      background: rgba(245, 168, 0, 0.1);
+      border: 1px solid rgba(245, 168, 0, 0.3);
+      border-radius: 30px;
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .ad-popup-imgwrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      background: var(--dark3);
+    }
+    .ad-popup-imgwrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .ad-popup-company { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 0.02em; color: var(--white); margin-bottom: 22px; line-height: 1.1; }
+
+    .ad-popup-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 28px;
+      border-radius: 50px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .ad-popup-cta:hover { background: var(--gold-lt); }
+
+    @media (max-width: 850px) {
+      .ad-popup-modal { align-items: flex-end; padding: 0; }
+      .ad-popup-content { max-width: 100%; border-radius: 28px 28px 0 0; padding: 28px 24px 36px; }
+      .ad-popup-close { top: 20px; right: 20px; }
+    }
+
     /* ═══════════════════════════════════════
        ENGAGEMENT PREVIEW (like/comment/share counts on cards)
     ═══════════════════════════════════════ */
@@ -946,198 +1052,6 @@
 
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.7); } }
     @keyframes eqAnim { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1); } }
-
-    /* ═══════════════════════════════════════
-       POPUP AD
-       Sponsored popup, fully controlled from the admin dashboard
-       (enable/disable, delay, frequency, and each ad's content).
-       Image is always 1:1. Same markup/behavior as the home page.
-    ═══════════════════════════════════════ */
-    .ad-popup-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 3000;
-      background: rgba(10, 10, 10, 0.82);
-      backdrop-filter: blur(12px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s ease;
-    }
-
-    .ad-popup-overlay.active { opacity: 1; pointer-events: auto; }
-
-    .ad-popup-card {
-      width: 100%;
-      max-width: 380px;
-      background: var(--dark2);
-      border: 1px solid rgba(245, 168, 0, 0.25);
-      border-radius: 24px;
-      overflow: hidden;
-      position: relative;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(245, 168, 0, 0.06);
-      transform: scale(0.82) translateY(30px);
-      opacity: 0;
-      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
-    }
-
-    .ad-popup-overlay.active .ad-popup-card { transform: scale(1) translateY(0); opacity: 1; }
-
-    .ad-popup-close {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 34px;
-      height: 34px;
-      background: rgba(0, 0, 0, 0.55);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 50%;
-      color: var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 2;
-      backdrop-filter: blur(6px);
-      transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.35s;
-    }
-    .ad-popup-close:hover { background: var(--gold); color: var(--black); border-color: var(--gold); transform: rotate(90deg); }
-
-    /* ── Slide track — one slide per company, auto-advances when
-       there's more than one eligible ad; swipeable on touch ── */
-    .ad-popup-slides {
-      display: flex;
-      transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
-    }
-    .ad-popup-slide {
-      flex: 0 0 100%;
-      min-width: 0;
-    }
-
-    .ad-popup-imgwrap {
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: var(--dark3);
-      overflow: hidden;
-      position: relative;
-    }
-    .ad-popup-img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-
-    .ad-popup-body { padding: 22px 24px 26px; text-align: center; }
-
-    /* ── Dots — which company is showing + a way to jump to another ── */
-    .ad-popup-dots {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
-      padding: 0 0 20px;
-    }
-    .ad-popup-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: rgba(245, 168, 0, 0.25);
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      transition: background 0.25s, width 0.25s, border-radius 0.25s;
-    }
-    .ad-popup-dot.active { background: var(--gold); width: 20px; border-radius: 4px; }
-
-    /* ── Manual prev/next — sit exactly over the (square) image area
-       so they stay put while the slide track scrolls underneath ── */
-    .ad-popup-imgnav {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      aspect-ratio: 1 / 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 10px;
-      pointer-events: none;
-      z-index: 2;
-    }
-    .ad-popup-arrow {
-      pointer-events: auto;
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(6px);
-      color: var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.2s;
-    }
-    .ad-popup-arrow svg { display: block; }
-    .ad-popup-arrow:hover { background: var(--gold); border-color: var(--gold); color: var(--black); transform: scale(1.08); }
-
-    .ad-popup-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold);
-      background: rgba(245, 168, 0, 0.1);
-      border: 1px solid rgba(245, 168, 0, 0.25);
-      border-radius: 30px;
-      padding: 5px 14px;
-      margin-bottom: 14px;
-    }
-
-    .ad-popup-company {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 27px;
-      letter-spacing: 0.02em;
-      line-height: 1.15;
-      color: var(--text);
-      margin-bottom: 20px;
-    }
-    .ad-popup-company:empty { display: none; margin-bottom: 8px; }
-
-    .ad-popup-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 15px 20px;
-      border-radius: 50px;
-      background: var(--gold);
-      color: var(--black);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: background 0.25s, box-shadow 0.25s, transform 0.2s;
-      box-shadow: 0 0 20px rgba(245, 168, 0, 0.35);
-    }
-    .ad-popup-cta:hover {
-      background: var(--gold-lt);
-      box-shadow: 0 0 32px rgba(245, 168, 0, 0.6);
-      transform: translateY(-2px);
-    }
-    .ad-popup-cta svg { transition: transform 0.25s; }
-    .ad-popup-cta:hover svg { transform: translate(2px, -2px); }
-
-    @media (max-width: 480px) {
-      .ad-popup-card { max-width: 100%; border-radius: 20px; }
-      .ad-popup-company { font-size: 23px; }
-    }
 
     @media (max-width: 850px) {
       nav { padding: 16px 24px; }
@@ -1308,24 +1222,13 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════ POPUP AD ═══════════════════════════════════════
-       Sponsored popup, fully controlled from the admin dashboard (Popup Ads tab):
-       on/off, delay, frequency, and every ad's image/company/button/link. ═══ -->
-  <div class="ad-popup-overlay" id="adPopupOverlay">
-    <div class="ad-popup-card" id="adPopupCard">
-      <button class="ad-popup-close" id="adPopupClose" aria-label="Close">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      </button>
-      <div class="ad-popup-slides" id="adPopupSlides"></div>
-      <div class="ad-popup-imgnav" id="adPopupImgnav">
-        <button class="ad-popup-arrow prev" id="adPopupPrev" aria-label="Previous company">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <button class="ad-popup-arrow next" id="adPopupNext" aria-label="Next company">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-      </div>
-      <div class="ad-popup-dots" id="adPopupDots"></div>
+  <div class="ad-popup-modal" id="adPopupModal">
+    <button class="ad-popup-close" id="adPopupClose" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    <div class="ad-popup-content" id="adPopupContent">
+      <span class="ad-popup-badge">Sponsored</span>
+      <div class="ad-popup-imgwrap"><img id="adPopupImg" src="" alt="" /></div>
+      <div class="ad-popup-company" id="adPopupCompany"></div>
+      <a class="ad-popup-cta" id="adPopupCta" href="#" target="_blank" rel="noopener sponsored"></a>
     </div>
   </div>
 
@@ -1460,7 +1363,7 @@
        spot what's new.                                                 ═══ -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getDatabase, ref, onValue, update, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCh7Ute6LeSAxcNDEQwZg5m0cA4ujnLCfg",
@@ -1717,189 +1620,86 @@
       computeTrending();
     });
 
-    /* ── POPUP AD — rendered from /popupSettings + /popups ──
-       Fully controlled from the admin dashboard's Popup Ads tab:
-       whether it shows at all, how long it waits, how often a
-       given visitor sees one, and every ad's own image/company/
-       button/link. Same behavior as the home page: every eligible
-       company gets shown, auto-advancing through them all. */
-    const popupOverlay = document.getElementById('adPopupOverlay');
-    const popupSlidesEl = document.getElementById('adPopupSlides');
-    const popupDotsEl = document.getElementById('adPopupDots');
-    const popupImgnavEl = document.getElementById('adPopupImgnav');
-    const popupPrevBtn = document.getElementById('adPopupPrev');
-    const popupNextBtn = document.getElementById('adPopupNext');
-    const popupClose = document.getElementById('adPopupClose');
+    // ── SPONSORED POPUP AD ──
+    // Reads /popups and /popupSettings — the same nodes the admin
+    // dashboard's Popup Ads tab writes to. Only shows on this page
+    // when popupSettings.newsEnabled is true (a separate switch from
+    // the homepage's popupSettings.enabled), after the configured
+    // delay, and no more often than the configured frequency.
+    let popupsCache = {};
+    let popupSettingsCache = { newsEnabled: false, delaySeconds: 4, frequency: 'session' };
+    let popupsLoaded = false, popupSettingsLoaded = false, popupScheduled = false;
 
-    let popupSettings = null;
-    let popupAds = [];
-    let popupSettingsLoaded = false;
-    let popupAdsLoaded = false;
-    let popupScheduled = false;
-    let popupSlideList = [];       // [id, ad] for every company in the current popup, shuffled per open
-    let popupSlideCount = 0;
-    let popupCurrentSlide = 0;
-    let popupRotateTimer = null;
-    let popupImpressedIds = new Set(); // avoid re-counting an impression as it loops around
-    const POPUP_ROTATE_MS = 5000;      // how long each company stays on screen before advancing
-
-    function popupCanShow(settings) {
-      if (!settings || !settings.enabled) return false;
-      const freq = settings.frequency || 'session';
-      if (freq === 'every') return true;
-      if (freq === 'day') {
-        const last = parseInt(localStorage.getItem('mfmPopupLastShown') || '0', 10);
-        return (Date.now() - last) > 24 * 60 * 60 * 1000;
-      }
-      // 'session' (default)
-      return sessionStorage.getItem('mfmPopupShownSession') !== '1';
-    }
-
-    function markPopupShown(settings) {
-      const freq = settings?.frequency || 'session';
-      if (freq === 'day') localStorage.setItem('mfmPopupLastShown', String(Date.now()));
-      else if (freq === 'session') sessionStorage.setItem('mfmPopupShownSession', '1');
-    }
-
-    function shuffledCopy(arr) {
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-
-    function tryScheduleAdPopup() {
-      if (!popupSettingsLoaded || !popupAdsLoaded || popupScheduled) return;
-      if (!popupCanShow(popupSettings)) return;
-      const eligible = popupAds.filter(([, ad]) => ad.enabled && ad.imageUrl && ad.ctaUrl);
-      if (!eligible.length) return;
-
-      popupScheduled = true;
-      const delayMs = Math.max(0, Number(popupSettings.delaySeconds ?? 4)) * 1000;
-      setTimeout(() => showAdPopup(shuffledCopy(eligible)), delayMs);
-    }
-
-    function popupSlideHTML([id, ad]) {
-      const ctaHref = /^https?:\/\//i.test(ad.ctaUrl || '') ? ad.ctaUrl : `https://${ad.ctaUrl || ''}`;
-      return `
-        <div class="ad-popup-slide">
-          <div class="ad-popup-imgwrap">
-            <img class="ad-popup-img" src="${escapeHtml(ad.imageUrl || '')}" alt="${escapeHtml(ad.companyName || 'Advertisement')}" />
-          </div>
-          <div class="ad-popup-body">
-            <span class="ad-popup-badge">Advertisement</span>
-            <h3 class="ad-popup-company">${escapeHtml(ad.companyName || '')}</h3>
-            <a class="ad-popup-cta" href="${escapeHtml(ctaHref)}" target="_blank" rel="noopener sponsored" data-id="${escapeHtml(id)}">
-              <span>${escapeHtml(ad.ctaText || 'Visit Website')}</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
-            </a>
-          </div>
-        </div>`;
-    }
-
-    function showAdPopup(eligible) {
-      popupSlideList = eligible;
-      popupSlideCount = eligible.length;
-      popupCurrentSlide = 0;
-      popupImpressedIds = new Set();
-
-      popupSlidesEl.innerHTML = eligible.map(popupSlideHTML).join('');
-      popupDotsEl.innerHTML = popupSlideCount > 1
-        ? eligible.map((_, i) => `<button class="ad-popup-dot${i === 0 ? ' active' : ''}" data-index="${i}" aria-label="Show company ${i + 1}"></button>`).join('')
-        : '';
-      popupImgnavEl.style.display = popupSlideCount > 1 ? '' : 'none';
-
-      renderPopupSlide();
-      popupOverlay.classList.add('active');
-      markPopupShown(popupSettings);
-      registerPopupImpression();
-      clearInterval(popupRotateTimer);
-      if (popupSlideCount > 1) startPopupRotation();
-    }
-
-    function renderPopupSlide() {
-      popupSlidesEl.style.transform = `translateX(-${popupCurrentSlide * 100}%)`;
-      popupDotsEl.querySelectorAll('.ad-popup-dot').forEach((dot, i) => dot.classList.toggle('active', i === popupCurrentSlide));
-    }
-
-    function goToPopupSlide(index) {
-      if (!popupSlideCount) return;
-      popupCurrentSlide = (index + popupSlideCount) % popupSlideCount;
-      renderPopupSlide();
-      registerPopupImpression();
-    }
-
-    function nextPopupSlide() { goToPopupSlide(popupCurrentSlide + 1); }
-    function startPopupRotation() { popupRotateTimer = setInterval(nextPopupSlide, POPUP_ROTATE_MS); }
-    function restartPopupRotation() { clearInterval(popupRotateTimer); if (popupSlideCount > 1) startPopupRotation(); }
-
-    function registerPopupImpression() {
-      const id = popupSlideList[popupCurrentSlide]?.[0];
-      if (!id || popupImpressedIds.has(id)) return;
-      popupImpressedIds.add(id);
-      runTransaction(ref(db, `popupEngagement/${id}/impressions`), (c) => (c || 0) + 1);
-    }
+    const adPopupModal = document.getElementById('adPopupModal');
+    const adPopupImg = document.getElementById('adPopupImg');
+    const adPopupCompany = document.getElementById('adPopupCompany');
+    const adPopupCta = document.getElementById('adPopupCta');
+    const adPopupClose = document.getElementById('adPopupClose');
+    let activePopupId = null;
 
     function closeAdPopup() {
-      popupOverlay.classList.remove('active');
-      clearInterval(popupRotateTimer);
+      adPopupModal.classList.remove('active');
+    }
+    adPopupClose.addEventListener('click', closeAdPopup);
+    adPopupModal.addEventListener('click', (e) => { if (e.target === adPopupModal) closeAdPopup(); });
+
+    function popupAlreadyShown(frequency) {
+      if (frequency === 'every') return false;
+      if (frequency === 'day') {
+        const last = parseInt(localStorage.getItem('mfmNewsPopupLastShown') || '0', 10);
+        return (Date.now() - last) < 24 * 60 * 60 * 1000;
+      }
+      // default: once per session
+      return sessionStorage.getItem('mfmNewsPopupShownSession') === '1';
     }
 
-    popupClose.addEventListener('click', closeAdPopup);
-    popupOverlay.addEventListener('click', (e) => { if (e.target === popupOverlay) closeAdPopup(); });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && popupOverlay.classList.contains('active')) closeAdPopup();
+    function markPopupShown(frequency) {
+      if (frequency === 'day') localStorage.setItem('mfmNewsPopupLastShown', String(Date.now()));
+      sessionStorage.setItem('mfmNewsPopupShownSession', '1');
+    }
+
+    function showAdPopup(id, item) {
+      activePopupId = id;
+      adPopupImg.src = item.imageUrl || '';
+      adPopupImg.alt = item.companyName || '';
+      adPopupCompany.textContent = item.companyName || '';
+      adPopupCta.textContent = item.ctaText || 'Visit Website';
+      adPopupCta.href = item.ctaUrl || '#';
+      adPopupModal.classList.add('active');
+      markPopupShown(popupSettingsCache.frequency || 'session');
+      update(ref(db, `popupEngagement/${id}`), { impressions: increment(1) }).catch(() => {});
+    }
+
+    adPopupCta.addEventListener('click', () => {
+      if (!activePopupId) return;
+      update(ref(db, `popupEngagement/${activePopupId}`), { clicks: increment(1) }).catch(() => {});
     });
 
-    // Pause auto-advance while the visitor is looking at the card,
-    // same pattern as the home page.
-    popupOverlay.addEventListener('mouseenter', () => clearInterval(popupRotateTimer));
-    popupOverlay.addEventListener('mouseleave', () => { if (popupSlideCount > 1) startPopupRotation(); });
+    function maybeSchedulePopup() {
+      if (popupScheduled || !popupsLoaded || !popupSettingsLoaded) return;
+      if (!popupSettingsCache.newsEnabled) return;
+      if (popupAlreadyShown(popupSettingsCache.frequency || 'session')) return;
 
-    // Dot navigation
-    popupDotsEl.addEventListener('click', (e) => {
-      const dot = e.target.closest('.ad-popup-dot');
-      if (!dot) return;
-      goToPopupSlide(Number(dot.dataset.index));
-      restartPopupRotation();
-    });
+      const activeAds = Object.entries(popupsCache).filter(([, item]) => item.enabled && item.imageUrl);
+      if (!activeAds.length) return;
 
-    // Manual prev/next arrows
-    popupPrevBtn.addEventListener('click', () => { goToPopupSlide(popupCurrentSlide - 1); restartPopupRotation(); });
-    popupNextBtn.addEventListener('click', () => { goToPopupSlide(popupCurrentSlide + 1); restartPopupRotation(); });
-
-    // Swipe support on touch devices
-    let popupTouchStartX = null;
-    popupSlidesEl.addEventListener('touchstart', (e) => { popupTouchStartX = e.touches[0].clientX; }, { passive: true });
-    popupSlidesEl.addEventListener('touchend', (e) => {
-      if (popupTouchStartX === null) return;
-      const delta = e.changedTouches[0].clientX - popupTouchStartX;
-      if (Math.abs(delta) > 40) { goToPopupSlide(popupCurrentSlide + (delta < 0 ? 1 : -1)); restartPopupRotation(); }
-      popupTouchStartX = null;
-    }, { passive: true });
-
-    // CTA clicks — slides are rebuilt each time the popup opens, so use
-    // event delegation rather than binding a listener per link.
-    popupSlidesEl.addEventListener('click', (e) => {
-      const cta = e.target.closest('.ad-popup-cta');
-      if (!cta) return;
-      const id = cta.dataset.id;
-      if (id) runTransaction(ref(db, `popupEngagement/${id}/clicks`), (c) => (c || 0) + 1);
-    });
-
-    onValue(ref(db, 'popupSettings'), (snap) => {
-      popupSettings = { enabled: true, delaySeconds: 4, frequency: 'session', ...(snap.val() || {}) };
-      popupSettingsLoaded = true;
-      tryScheduleAdPopup();
-    }, (err) => console.error('Popup settings sync error:', err));
+      popupScheduled = true;
+      const [id, item] = activeAds[Math.floor(Math.random() * activeAds.length)];
+      const delayMs = Math.max(0, (popupSettingsCache.delaySeconds ?? 4)) * 1000;
+      setTimeout(() => showAdPopup(id, item), delayMs);
+    }
 
     onValue(ref(db, 'popups'), (snap) => {
-      popupAds = Object.entries(snap.val() || {});
-      popupAdsLoaded = true;
-      tryScheduleAdPopup();
+      popupsCache = snap.val() || {};
+      popupsLoaded = true;
+      maybeSchedulePopup();
     }, (err) => console.error('Popup ads sync error:', err));
+
+    onValue(ref(db, 'popupSettings'), (snap) => {
+      popupSettingsCache = { newsEnabled: false, delaySeconds: 4, frequency: 'session', ...(snap.val() || {}) };
+      popupSettingsLoaded = true;
+      maybeSchedulePopup();
+    }, (err) => console.error('Popup settings sync error:', err));
   </script>
 </body>
 </html>
