@@ -980,17 +980,9 @@
     }
     .ad-popup-close:hover { background: var(--gold); color: var(--black); border-color: var(--gold); transform: rotate(90deg); }
 
-    /* ── Slide track — one slide per company, auto-advances when
-       there's more than one eligible ad; swipeable on touch ── */
-    .ad-popup-slides {
-      display: flex;
-      transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
-    }
-    .ad-popup-slide {
-      flex: 0 0 100%;
-      min-width: 0;
-    }
-
+    /* ── Single ad image + body. Only one ad is on screen at a
+       time — the popup itself is swapped out and re-opened by the
+       JS cycle below, so there is no internal slide track anymore. ── */
     .ad-popup-imgwrap {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -1001,60 +993,6 @@
     .ad-popup-img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
 
     .ad-popup-body { padding: 22px 24px 26px; text-align: center; }
-
-    /* ── Dots — which company is showing + a way to jump to another ── */
-    .ad-popup-dots {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
-      padding: 0 0 20px;
-    }
-    .ad-popup-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: rgba(245, 168, 0, 0.25);
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      transition: background 0.25s, width 0.25s, border-radius 0.25s;
-    }
-    .ad-popup-dot.active { background: var(--gold); width: 20px; border-radius: 4px; }
-
-    /* ── Manual prev/next — sit exactly over the (square) image area
-       so they stay put while the slide track scrolls underneath ── */
-    .ad-popup-imgnav {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      aspect-ratio: 1 / 1;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 10px;
-      pointer-events: none;
-      z-index: 2;
-    }
-    .ad-popup-arrow {
-      pointer-events: auto;
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(6px);
-      color: var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.2s;
-    }
-    .ad-popup-arrow svg { display: block; }
-    .ad-popup-arrow:hover { background: var(--gold); border-color: var(--gold); color: var(--black); transform: scale(1.08); }
 
     .ad-popup-badge {
       display: inline-block;
@@ -1317,16 +1255,17 @@
       <button class="ad-popup-close" id="adPopupClose" aria-label="Close">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
-      <div class="ad-popup-slides" id="adPopupSlides"></div>
-      <div class="ad-popup-imgnav" id="adPopupImgnav">
-        <button class="ad-popup-arrow prev" id="adPopupPrev" aria-label="Previous company">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <button class="ad-popup-arrow next" id="adPopupNext" aria-label="Next company">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
+      <div class="ad-popup-imgwrap">
+        <img class="ad-popup-img" id="adPopupImg" src="" alt="" />
       </div>
-      <div class="ad-popup-dots" id="adPopupDots"></div>
+      <div class="ad-popup-body">
+        <span class="ad-popup-badge">Advertisement</span>
+        <h3 class="ad-popup-company" id="adPopupCompany"></h3>
+        <a class="ad-popup-cta" id="adPopupCta" href="#" target="_blank" rel="noopener sponsored">
+          <span id="adPopupCtaText">Visit Website</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+        </a>
+      </div>
     </div>
   </div>
 
