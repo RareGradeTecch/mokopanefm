@@ -980,9 +980,9 @@
     }
     .ad-popup-close:hover { background: var(--gold); color: var(--black); border-color: var(--gold); transform: rotate(90deg); }
 
-    /* ── Single ad image + body. Only one ad is on screen at a
-       time — the popup itself is swapped out and re-opened by the
-       JS cycle below, so there is no internal slide track anymore. ── */
+    /* ── Single-ad content — one ad fills the whole popup. A new popup
+       (with a different, randomly shuffled ad) reappears after the
+       admin-configured interval once this one is closed ── */
     .ad-popup-imgwrap {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -1659,29 +1659,29 @@
 
     /* ── POPUP AD — rendered from /popupSettings + /popups ──
        Fully controlled from the admin dashboard's Popup Ads tab:
-       whether it shows at all, how long it waits, how often a
-       given visitor sees one, and every ad's own image/company/
-       button/link. If more than one ad is switched on, all of
-       them are shown in a rotating carousel so ads rotate fairly. */
+       whether it shows at all, how long to wait before the first
+       one, how long to wait between one closing and the next
+       appearing, and how often a given visitor sees the loop at
+       all. Each popup shows exactly ONE ad — never a carousel.
+       When more than one ad is active, they're shuffled into a
+       random order and shown one after another, forever, for as
+       long as the visitor stays on the page. */
     const popupOverlay = document.getElementById('adPopupOverlay');
-    const popupSlidesEl = document.getElementById('adPopupSlides');
-    const popupDotsEl = document.getElementById('adPopupDots');
-    const popupImgnavEl = document.getElementById('adPopupImgnav');
-    const popupPrevBtn = document.getElementById('adPopupPrev');
-    const popupNextBtn = document.getElementById('adPopupNext');
+    const popupImgEl = document.getElementById('adPopupImg');
+    const popupCompanyEl = document.getElementById('adPopupCompany');
+    const popupCtaEl = document.getElementById('adPopupCta');
+    const popupCtaTextEl = document.getElementById('adPopupCtaText');
     const popupClose = document.getElementById('adPopupClose');
 
     let popupSettings = null;
-    let popupAds = [];
+    let popupAds = [];             // raw [id, ad] entries from Firebase
     let popupSettingsLoaded = false;
     let popupAdsLoaded = false;
-    let popupScheduled = false;
-    let popupSlideList = [];       // [id, ad] for every company in the current popup, shuffled per open
-    let popupSlideCount = 0;
-    let popupCurrentSlide = 0;
-    let popupRotateTimer = null;
-    let popupImpressedIds = new Set(); // avoid re-counting an impression as it loops around
-    const POPUP_ROTATE_MS = 5000;      // how long each company stays on screen before advancing
+    let popupLoopStarted = false;  // whether the recurring show/wait loop has kicked off this page load
+    let popupQueue = [];           // shuffled [id, ad] entries still to show this cycle
+    let popupCurrentAdId = null;
+    let popupTimer = null;         // pending "show the next one" timer
+    let popupImpressedIds = new Set(); // avoid re-counting an impression for the same ad twice in a row
 
     function popupCanShow(settings) {
       if (!settings || !settings.newsEnabled) return false;
@@ -1710,81 +1710,68 @@
       return a;
     }
 
-    function tryScheduleAdPopup() {
-      if (!popupSettingsLoaded || !popupAdsLoaded || popupScheduled) return;
+    function eligibleAds() {
+      return popupAds.filter(([, ad]) => ad.enabled && ad.imageUrl && ad.ctaUrl);
+    }
+
+    // Kicks off the recurring loop once, for qualifying visits. After this,
+    // the loop keeps itself going via closeAdPopup()'s own timer — it never
+    // needs to be "scheduled" again for the rest of this page load.
+    function tryStartPopupLoop() {
+      if (!popupSettingsLoaded || !popupAdsLoaded || popupLoopStarted) return;
       if (!popupCanShow(popupSettings)) return;
-      const eligible = popupAds.filter(([, ad]) => ad.enabled && ad.imageUrl && ad.ctaUrl);
-      if (!eligible.length) return;
+      if (!eligibleAds().length) return;
 
-      popupScheduled = true;
+      popupLoopStarted = true;
       const delayMs = Math.max(0, Number(popupSettings.delaySeconds ?? 4)) * 1000;
-      setTimeout(() => showAdPopup(shuffledCopy(eligible)), delayMs);
+      popupTimer = setTimeout(showNextAd, delayMs);
     }
 
-    function popupSlideHTML([id, ad]) {
+    // Pulls the next ad from the shuffled queue, reshuffling (and avoiding an
+    // immediate repeat, when possible) whenever the queue runs out.
+    function nextFromQueue() {
+      const eligible = eligibleAds();
+      if (!eligible.length) return null;
+
+      popupQueue = popupQueue.filter(([id]) => eligible.some(([eid]) => eid === id));
+      if (popupQueue.length === 0) {
+        popupQueue = shuffledCopy(eligible);
+        if (popupQueue.length > 1 && popupQueue[0][0] === popupCurrentAdId) {
+          popupQueue.push(popupQueue.shift());
+        }
+      }
+      return popupQueue.shift();
+    }
+
+    function showNextAd() {
+      if (!popupSettings?.newsEnabled) return; // feature may have been switched off while we were waiting
+      const next = nextFromQueue();
+      if (!next) return; // no eligible ads left right now — loop resumes once one is added/enabled again
+
+      const [id, ad] = next;
+      popupCurrentAdId = id;
       const ctaHref = /^https?:\/\//i.test(ad.ctaUrl || '') ? ad.ctaUrl : `https://${ad.ctaUrl || ''}`;
-      return `
-        <div class="ad-popup-slide">
-          <div class="ad-popup-imgwrap">
-            <img class="ad-popup-img" src="${escapeHtml(ad.imageUrl || '')}" alt="${escapeHtml(ad.companyName || 'Advertisement')}" />
-          </div>
-          <div class="ad-popup-body">
-            <span class="ad-popup-badge">Advertisement</span>
-            <h3 class="ad-popup-company">${escapeHtml(ad.companyName || '')}</h3>
-            <a class="ad-popup-cta" href="${escapeHtml(ctaHref)}" target="_blank" rel="noopener sponsored" data-id="${escapeHtml(id)}">
-              <span>${escapeHtml(ad.ctaText || 'Visit Website')}</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
-            </a>
-          </div>
-        </div>`;
-    }
 
-    function showAdPopup(eligible) {
-      popupSlideList = eligible;
-      popupSlideCount = eligible.length;
-      popupCurrentSlide = 0;
-      popupImpressedIds = new Set();
+      popupImgEl.src = ad.imageUrl || '';
+      popupImgEl.alt = ad.companyName || 'Advertisement';
+      popupCompanyEl.textContent = ad.companyName || '';
+      popupCtaTextEl.textContent = ad.ctaText || 'Visit Website';
+      popupCtaEl.href = ctaHref;
+      popupCtaEl.dataset.id = id;
 
-      popupSlidesEl.innerHTML = eligible.map(popupSlideHTML).join('');
-      popupDotsEl.innerHTML = popupSlideCount > 1
-        ? eligible.map((_, i) => `<button class="ad-popup-dot${i === 0 ? ' active' : ''}" data-index="${i}" aria-label="Show company ${i + 1}"></button>`).join('')
-        : '';
-      popupImgnavEl.style.display = popupSlideCount > 1 ? '' : 'none';
-
-      renderPopupSlide();
       popupOverlay.classList.add('active');
       markPopupShown(popupSettings);
-      registerPopupImpression();
-      clearInterval(popupRotateTimer);
-      if (popupSlideCount > 1) startPopupRotation();
-    }
-
-    function renderPopupSlide() {
-      popupSlidesEl.style.transform = `translateX(-${popupCurrentSlide * 100}%)`;
-      popupDotsEl.querySelectorAll('.ad-popup-dot').forEach((dot, i) => dot.classList.toggle('active', i === popupCurrentSlide));
-    }
-
-    function goToPopupSlide(index) {
-      if (!popupSlideCount) return;
-      popupCurrentSlide = (index + popupSlideCount) % popupSlideCount;
-      renderPopupSlide();
-      registerPopupImpression();
-    }
-
-    function nextPopupSlide() { goToPopupSlide(popupCurrentSlide + 1); }
-    function startPopupRotation() { popupRotateTimer = setInterval(nextPopupSlide, POPUP_ROTATE_MS); }
-    function restartPopupRotation() { clearInterval(popupRotateTimer); if (popupSlideCount > 1) startPopupRotation(); }
-
-    function registerPopupImpression() {
-      const id = popupSlideList[popupCurrentSlide]?.[0];
-      if (!id || popupImpressedIds.has(id)) return;
-      popupImpressedIds.add(id);
-      runTransaction(ref(db, `popupEngagement/${id}/impressions`), (c) => (c || 0) + 1);
+      if (!popupImpressedIds.has(id)) {
+        popupImpressedIds.add(id);
+        runTransaction(ref(db, `popupEngagement/${id}/impressions`), (c) => (c || 0) + 1);
+      }
     }
 
     function closeAdPopup() {
       popupOverlay.classList.remove('active');
-      clearInterval(popupRotateTimer);
+      clearTimeout(popupTimer);
+      const intervalMs = Math.max(5, Number(popupSettings?.intervalSeconds ?? 60)) * 1000;
+      popupTimer = setTimeout(showNextAd, intervalMs);
     }
 
     popupClose.addEventListener('click', closeAdPopup);
@@ -1793,52 +1780,25 @@
       if (e.key === 'Escape' && popupOverlay.classList.contains('active')) closeAdPopup();
     });
 
-    // Pause auto-advance while the visitor is looking at the card,
-    // same pattern as the photo carousel above.
-    popupOverlay.addEventListener('mouseenter', () => clearInterval(popupRotateTimer));
-    popupOverlay.addEventListener('mouseleave', () => { if (popupSlideCount > 1) startPopupRotation(); });
-
-    // Dot navigation
-    popupDotsEl.addEventListener('click', (e) => {
-      const dot = e.target.closest('.ad-popup-dot');
-      if (!dot) return;
-      goToPopupSlide(Number(dot.dataset.index));
-      restartPopupRotation();
-    });
-
-    // Manual prev/next arrows
-    popupPrevBtn.addEventListener('click', () => { goToPopupSlide(popupCurrentSlide - 1); restartPopupRotation(); });
-    popupNextBtn.addEventListener('click', () => { goToPopupSlide(popupCurrentSlide + 1); restartPopupRotation(); });
-
-    // Swipe support on touch devices
-    let popupTouchStartX = null;
-    popupSlidesEl.addEventListener('touchstart', (e) => { popupTouchStartX = e.touches[0].clientX; }, { passive: true });
-    popupSlidesEl.addEventListener('touchend', (e) => {
-      if (popupTouchStartX === null) return;
-      const delta = e.changedTouches[0].clientX - popupTouchStartX;
-      if (Math.abs(delta) > 40) { goToPopupSlide(popupCurrentSlide + (delta < 0 ? 1 : -1)); restartPopupRotation(); }
-      popupTouchStartX = null;
-    }, { passive: true });
-
-    // CTA clicks — slides are rebuilt each time the popup opens, so use
-    // event delegation rather than binding a listener per link.
-    popupSlidesEl.addEventListener('click', (e) => {
-      const cta = e.target.closest('.ad-popup-cta');
-      if (!cta) return;
-      const id = cta.dataset.id;
+    popupCtaEl.addEventListener('click', () => {
+      const id = popupCtaEl.dataset.id;
       if (id) runTransaction(ref(db, `popupEngagement/${id}/clicks`), (c) => (c || 0) + 1);
     });
 
     onValue(ref(db, 'popupSettings'), (snap) => {
-      popupSettings = { newsEnabled: false, delaySeconds: 4, frequency: 'session', ...(snap.val() || {}) };
+      popupSettings = { newsEnabled: false, delaySeconds: 4, intervalSeconds: 60, frequency: 'session', ...(snap.val() || {}) };
       popupSettingsLoaded = true;
-      tryScheduleAdPopup();
+      if (!popupSettings.newsEnabled) {
+        clearTimeout(popupTimer);
+        popupOverlay.classList.remove('active');
+      }
+      tryStartPopupLoop();
     }, (err) => console.error('Popup settings sync error:', err));
 
     onValue(ref(db, 'popups'), (snap) => {
       popupAds = Object.entries(snap.val() || {});
       popupAdsLoaded = true;
-      tryScheduleAdPopup();
+      tryStartPopupLoop();
     }, (err) => console.error('Popup ads sync error:', err));
   </script>
 </body>
