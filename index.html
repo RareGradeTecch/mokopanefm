@@ -1613,9 +1613,9 @@
     }
     .ad-popup-close:hover { background: var(--gold); color: var(--black); border-color: var(--gold); transform: rotate(90deg); }
 
-    /* ── Single ad image + body. Only one ad is on screen at a
-       time — the popup itself is swapped out and re-opened by the
-       JS cycle below, so there is no internal slide track anymore. ── */
+    /* ── Single-ad content — one ad fills the whole popup. A new popup
+       (with a different, randomly shuffled ad) reappears after the
+       admin-configured interval once this one is closed ── */
     .ad-popup-imgwrap {
       width: 100%;
       aspect-ratio: 1 / 1;
@@ -2387,12 +2387,12 @@
     /* ── POPUP AD — rendered from /popupSettings + /popups ──
        Fully controlled from the admin dashboard's Popup Ads tab:
        whether it shows at all, how long to wait before the first
-       one, how often a given visitor sees the feature at all, and
-       every ad's own image/company/button/link. This is NOT a
-       carousel — only one ad is ever on screen at a time. Once the
-       cycle starts it shows one ad, waits `intervalSeconds`, closes
-       it and shows a different (shuffled/random) ad, forever, for
-       as long as the visitor stays on the page. */
+       one, how long to wait between one closing and the next
+       appearing, and how often a given visitor sees the loop at
+       all. Each popup shows exactly ONE ad — never a carousel.
+       When more than one ad is active, they're shuffled into a
+       random order and shown one after another, forever, for as
+       long as the visitor stays on the page. */
     const popupOverlay = document.getElementById('adPopupOverlay');
     const popupImgEl = document.getElementById('adPopupImg');
     const popupCompanyEl = document.getElementById('adPopupCompany');
@@ -2401,15 +2401,14 @@
     const popupClose = document.getElementById('adPopupClose');
 
     let popupSettings = null;
-    let popupAds = [];
+    let popupAds = [];             // raw [id, ad] entries from Firebase
     let popupSettingsLoaded = false;
     let popupAdsLoaded = false;
-    let popupCycleStarted = false;
-    let popupQueue = [];          // shuffled queue of [id, ad] still left to show this cycle
-    let popupLastShownId = null;  // avoid immediately repeating the same ad on reshuffle
-    let popupCurrentId = null;
-    let popupInitialTimer = null;
-    let popupCycleTimer = null;
+    let popupLoopStarted = false;  // whether the recurring show/wait loop has kicked off this page load
+    let popupQueue = [];           // shuffled [id, ad] entries still to show this cycle
+    let popupCurrentAdId = null;
+    let popupTimer = null;         // pending "show the next one" timer
+    let popupImpressedIds = new Set(); // avoid re-counting an impression for the same ad twice in a row
 
     function popupCanShow(settings) {
       if (!settings || !settings.enabled) return false;
@@ -2438,86 +2437,70 @@
       return a;
     }
 
-    function currentEligibleAds() {
+    function eligibleAds() {
       return popupAds.filter(([, ad]) => ad.enabled && ad.imageUrl && ad.ctaUrl);
     }
 
-    // Refills the queue with a freshly-shuffled order whenever it runs
-    // dry, nudging the very last ad shown away from the front so the
-    // same company doesn't appear twice back-to-back.
-    function refillQueue(eligible) {
-      let shuffled = shuffledCopy(eligible);
-      if (shuffled.length > 1 && shuffled[0][0] === popupLastShownId) {
-        const idx = shuffled.findIndex(([id]) => id !== popupLastShownId);
-        if (idx > 0) [shuffled[0], shuffled[idx]] = [shuffled[idx], shuffled[0]];
-      }
-      popupQueue = shuffled;
-    }
-
-    function tryStartPopupCycle() {
-      if (!popupSettingsLoaded || !popupAdsLoaded || popupCycleStarted) return;
+    // Kicks off the recurring loop once, for qualifying visits. After this,
+    // the loop keeps itself going via closeAdPopup()'s own timer — it never
+    // needs to be "scheduled" again for the rest of this page load.
+    function tryStartPopupLoop() {
+      if (!popupSettingsLoaded || !popupAdsLoaded || popupLoopStarted) return;
       if (!popupCanShow(popupSettings)) return;
-      if (!currentEligibleAds().length) return;
+      if (!eligibleAds().length) return;
 
-      popupCycleStarted = true;
+      popupLoopStarted = true;
       const delayMs = Math.max(0, Number(popupSettings.delaySeconds ?? 4)) * 1000;
-      popupInitialTimer = setTimeout(runPopupCycle, delayMs);
+      popupTimer = setTimeout(showNextAd, delayMs);
     }
 
-    function stopPopupCycle() {
-      popupCycleStarted = false;
-      clearTimeout(popupInitialTimer);
-      clearTimeout(popupCycleTimer);
-      closeAdPopup();
-    }
+    // Pulls the next ad from the shuffled queue, reshuffling (and avoiding an
+    // immediate repeat, when possible) whenever the queue runs out.
+    function nextFromQueue() {
+      const eligible = eligibleAds();
+      if (!eligible.length) return null;
 
-    // The infinite one-at-a-time loop: show an ad, wait
-    // intervalSeconds, close it, show the next random ad, repeat.
-    function runPopupCycle() {
-      const eligible = currentEligibleAds();
-      if (!popupSettings.enabled || !eligible.length) {
-        stopPopupCycle();
-        return;
-      }
-
-      // Drop any queued ids that are no longer eligible (deleted/disabled
-      // since the queue was built) and top the queue back up if needed.
       popupQueue = popupQueue.filter(([id]) => eligible.some(([eid]) => eid === id));
-      if (!popupQueue.length) refillQueue(eligible);
-
-      const [id, ad] = popupQueue.shift();
-      showAdPopup(id, ad);
-      popupLastShownId = id;
-
-      const intervalMs = Math.max(3, Number(popupSettings.intervalSeconds ?? 30)) * 1000;
-      clearTimeout(popupCycleTimer);
-      popupCycleTimer = setTimeout(() => {
-        closeAdPopup();
-        runPopupCycle();
-      }, intervalMs);
+      if (popupQueue.length === 0) {
+        popupQueue = shuffledCopy(eligible);
+        if (popupQueue.length > 1 && popupQueue[0][0] === popupCurrentAdId) {
+          popupQueue.push(popupQueue.shift());
+        }
+      }
+      return popupQueue.shift();
     }
 
-    function showAdPopup(id, ad) {
-      popupCurrentId = id;
+    function showNextAd() {
+      if (!popupSettings?.enabled) return; // feature may have been switched off while we were waiting
+      const next = nextFromQueue();
+      if (!next) return; // no eligible ads left right now — loop resumes once one is added/enabled again
+
+      const [id, ad] = next;
+      popupCurrentAdId = id;
       const ctaHref = /^https?:\/\//i.test(ad.ctaUrl || '') ? ad.ctaUrl : `https://${ad.ctaUrl || ''}`;
+
       popupImgEl.src = ad.imageUrl || '';
       popupImgEl.alt = ad.companyName || 'Advertisement';
       popupCompanyEl.textContent = ad.companyName || '';
-      popupCtaEl.href = ctaHref;
       popupCtaTextEl.textContent = ad.ctaText || 'Visit Website';
+      popupCtaEl.href = ctaHref;
+      popupCtaEl.dataset.id = id;
 
       popupOverlay.classList.add('active');
       markPopupShown(popupSettings);
-      runTransaction(ref(db, `popupEngagement/${id}/impressions`), (c) => (c || 0) + 1);
+      if (!popupImpressedIds.has(id)) {
+        popupImpressedIds.add(id);
+        runTransaction(ref(db, `popupEngagement/${id}/impressions`), (c) => (c || 0) + 1);
+      }
     }
 
     function closeAdPopup() {
       popupOverlay.classList.remove('active');
+      clearTimeout(popupTimer);
+      const intervalMs = Math.max(5, Number(popupSettings?.intervalSeconds ?? 60)) * 1000;
+      popupTimer = setTimeout(showNextAd, intervalMs);
     }
 
-    // Manually closing only dismisses the ad currently on screen —
-    // the cycle keeps running in the background and the next random
-    // ad will still appear right on schedule.
     popupClose.addEventListener('click', closeAdPopup);
     popupOverlay.addEventListener('click', (e) => { if (e.target === popupOverlay) closeAdPopup(); });
     document.addEventListener('keydown', (e) => {
@@ -2525,24 +2508,24 @@
     });
 
     popupCtaEl.addEventListener('click', () => {
-      if (popupCurrentId) runTransaction(ref(db, `popupEngagement/${popupCurrentId}/clicks`), (c) => (c || 0) + 1);
+      const id = popupCtaEl.dataset.id;
+      if (id) runTransaction(ref(db, `popupEngagement/${id}/clicks`), (c) => (c || 0) + 1);
     });
 
     onValue(ref(db, 'popupSettings'), (snap) => {
-      popupSettings = { enabled: true, delaySeconds: 4, intervalSeconds: 30, frequency: 'session', ...(snap.val() || {}) };
+      popupSettings = { enabled: true, delaySeconds: 4, intervalSeconds: 60, frequency: 'session', ...(snap.val() || {}) };
       popupSettingsLoaded = true;
       if (!popupSettings.enabled) {
-        // Admin disabled popups — stop the loop immediately if it was running.
-        if (popupCycleStarted) stopPopupCycle();
-      } else {
-        tryStartPopupCycle();
+        clearTimeout(popupTimer);
+        popupOverlay.classList.remove('active');
       }
+      tryStartPopupLoop();
     }, (err) => console.error('Popup settings sync error:', err));
 
     onValue(ref(db, 'popups'), (snap) => {
       popupAds = Object.entries(snap.val() || {});
       popupAdsLoaded = true;
-      tryStartPopupCycle();
+      tryStartPopupLoop();
     }, (err) => console.error('Popup ads sync error:', err));
   </script>
 </body>
